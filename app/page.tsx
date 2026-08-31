@@ -18,8 +18,7 @@ import {
 
 const data = rawData as unknown as TftData;
 const levels = [8, 9, 10, 11] as const;
-const defaultEmblem = data.emblems.find((emblem) => emblem.shortName === '地狱火')!;
-const defaultCounts = { [defaultEmblem.id]: 1 };
+const defaultCounts: Record<string, number> = {};
 const professionEmblemIds = new Set([
   '18-executioner',
   '18-brawler',
@@ -133,8 +132,8 @@ export default function Home() {
       </header>
 
       <section className="mx-auto max-w-[1500px] px-5 pb-14 pt-5 lg:px-8">
-        <div className="grid items-start gap-5 xl:grid-cols-[minmax(380px,0.78fr)_minmax(660px,1.42fr)]">
-          <section className="panel p-4 sm:p-5 xl:sticky xl:top-5" aria-labelledby="emblem-heading">
+        <div className="grid items-stretch gap-5 xl:grid-cols-[minmax(380px,0.78fr)_minmax(660px,1.42fr)]">
+          <section className="panel h-full p-4 sm:p-5" aria-labelledby="emblem-heading">
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <p className="eyebrow">STEP 01</p>
@@ -231,7 +230,7 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="panel overflow-hidden" aria-labelledby="result-heading">
+          <section className="panel h-full overflow-hidden" aria-labelledby="result-heading">
             <div className="border-b border-white/7 p-4 sm:p-5">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <div>
