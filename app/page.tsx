@@ -33,8 +33,8 @@ const professionEmblemIds = new Set([
   'juggernaut18',
 ]);
 const emblemGroups = [
-  data.emblems.filter((emblem) => professionEmblemIds.has(emblem.id)),
   data.emblems.filter((emblem) => !professionEmblemIds.has(emblem.id)),
+  data.emblems.filter((emblem) => professionEmblemIds.has(emblem.id)),
 ];
 const costColors: Record<number, string> = {
   1: '#8a9690',
@@ -280,7 +280,7 @@ export default function Home() {
                 <>
                   {variants.length > 1 && (
                     <div className="mb-3 flex items-center justify-end text-[11px] text-[#70837a]">
-                      向右滚动查看更多同分方案
+                      上下滚动查看更多同分方案
                     </div>
                   )}
                   <div
@@ -366,10 +366,6 @@ export default function Home() {
             </div>
           </section>
         </div>
-        <footer className="mt-6 flex flex-col justify-between gap-2 border-t border-white/6 pt-4 text-[11px] leading-5 text-[#53675e] sm:flex-row">
-          <p>数据快照：S18 · 18.1 · 2026-08-30，来源 CommunityDragon。</p>
-          <p>本项目与 Riot Games 无隶属或背书关系。</p>
-        </footer>
       </section>
     </main>
   );
