@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import Image from 'next/image';
+import { createElement, useEffect, useMemo, useState, type ImgHTMLAttributes } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
@@ -31,6 +30,16 @@ const costColors: Record<number, string> = {
   4: '#aa69d5',
   5: '#d6a54d',
 };
+
+const staticAsset = (src: string) => src.startsWith('/') ? `.${src}` : src;
+
+function StaticImage({
+  unoptimized: _unoptimized,
+  alt,
+  ...props
+}: Omit<ImgHTMLAttributes<HTMLImageElement>, 'alt'> & { alt: string; unoptimized?: boolean }) {
+  return createElement('img', { ...props, alt });
+}
 
 export default function Home() {
   const [emblemCounts, setEmblemCounts] = useState<Record<string, number>>(defaultCounts);
@@ -170,7 +179,7 @@ export default function Home() {
                   >
                     {count > 0 && <span className="emblem-count">{count}</span>}
                     <span className="emblem-image-wrap">
-                      <Image unoptimized src={emblem.icon} alt="" width={42} height={42} className="size-full object-cover" />
+                      <StaticImage unoptimized src={staticAsset(emblem.icon)} alt="" width={42} height={42} className="size-full object-cover" />
                     </span>
                     <span className="mt-1.5 line-clamp-1 text-[11px] text-[#9fafa7] group-data-[active=true]:text-[#f1e5bc]">
                       {emblem.shortName}
@@ -195,7 +204,7 @@ export default function Home() {
                       className="selected-emblem"
                       aria-label={`移除${emblem.name}`}
                     >
-                      <Image unoptimized src={emblem.icon} alt="" width={22} height={22} />
+                      <StaticImage unoptimized src={staticAsset(emblem.icon)} alt="" width={22} height={22} />
                       <span>{emblem.shortName}</span>
                       <b>×{emblemCounts[emblem.id]}</b>
                     </button>
@@ -313,13 +322,13 @@ export default function Home() {
                               className="champion-image"
                               style={{ '--cost': costColors[champion.cost] } as React.CSSProperties}
                             >
-                              <Image unoptimized src={champion.image} alt={champion.name} width={128} height={128} />
+                              <StaticImage unoptimized src={staticAsset(champion.image)} alt={champion.name} width={128} height={128} />
                               <span className="cost-badge">{champion.cost}</span>
                               {isNew && <span className="new-badge">本级新增</span>}
                               {items.length > 0 && (
                                 <div className="item-stack">
                                   {items.map((emblem) => emblem && (
-                                    <Image unoptimized key={emblem.id} src={emblem.icon} alt={emblem.name} title={emblem.name} width={20} height={20} />
+                                    <StaticImage unoptimized key={emblem.id} src={staticAsset(emblem.icon)} alt={emblem.name} title={emblem.name} width={20} height={20} />
                                   ))}
                                 </div>
                               )}
@@ -345,7 +354,7 @@ export default function Home() {
                       const fromEmblem = (emblemCounts[trait.id] ?? 0) > 0;
                       return (
                         <div key={trait.id} className="trait-pill" data-emblem={fromEmblem}>
-                          <Image unoptimized src={trait.icon} alt="" width={19} height={19} />
+                          <StaticImage unoptimized src={staticAsset(trait.icon)} alt="" width={19} height={19} />
                           <span>{trait.name}</span>
                           <b>{trait.count}</b>
                         </div>
