@@ -1,0 +1,1795 @@
+{
+  "meta": {
+    "set": 18,
+    "patch": "18.1",
+    "title": "Enchanted Wilds",
+    "locale": "zh_CN",
+    "syncedAt": "2026-08-30",
+    "source": "CommunityDragon"
+  },
+  "traits": [
+    {
+      "id": "18-elderwood",
+      "apiName": "DA_18_Elderwood",
+      "name": "永恒之森",
+      "breakpoints": [
+        3,
+        5,
+        7,
+        9,
+        11
+      ],
+      "icon": "/tft/traits/18-elderwood.png",
+      "unique": false
+    },
+    {
+      "id": "18-luxuniquetrait",
+      "apiName": "DA_18_LuxUniqueTrait",
+      "name": "自然之力！大元素使",
+      "breakpoints": [
+        1
+      ],
+      "icon": "/tft/traits/18-luxuniquetrait.png",
+      "unique": true
+    },
+    {
+      "id": "18-slayer",
+      "apiName": "DA_18_Slayer",
+      "name": "狂战士",
+      "breakpoints": [
+        2,
+        4,
+        6
+      ],
+      "icon": "/tft/traits/18-slayer.png",
+      "unique": false
+    },
+    {
+      "id": "dravenuniquetrait18",
+      "apiName": "DA_DravenUniqueTrait18",
+      "name": "赏金猎人",
+      "breakpoints": [
+        1
+      ],
+      "icon": "/tft/traits/dravenuniquetrait18.png",
+      "unique": true
+    },
+    {
+      "id": "18-solar",
+      "apiName": "DA_18_Solar",
+      "name": "日蚀骑士",
+      "breakpoints": [
+        3
+      ],
+      "icon": "/tft/traits/18-solar.png",
+      "unique": false
+    },
+    {
+      "id": "18-sprykin",
+      "apiName": "DA_18_Sprykin",
+      "name": "约德尔人和朋友",
+      "breakpoints": [
+        3,
+        5,
+        7
+      ],
+      "icon": "/tft/traits/18-sprykin.png",
+      "unique": false
+    },
+    {
+      "id": "18-adaptor",
+      "apiName": "DA_18_Adaptor",
+      "name": "魔战士",
+      "breakpoints": [
+        2,
+        3,
+        4
+      ],
+      "icon": "/tft/traits/18-adaptor.png",
+      "unique": false
+    },
+    {
+      "id": "18-coven",
+      "apiName": "DA_18_Coven",
+      "name": "魔女",
+      "breakpoints": [
+        3,
+        4,
+        5,
+        7
+      ],
+      "icon": "/tft/traits/18-coven.png",
+      "unique": false
+    },
+    {
+      "id": "18-hunter",
+      "apiName": "DA_18_Hunter",
+      "name": "猎人",
+      "breakpoints": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "icon": "/tft/traits/18-hunter.png",
+      "unique": false
+    },
+    {
+      "id": "18-maokai-uniquetrait",
+      "apiName": "DA_18_Maokai_UniqueTrait",
+      "name": "远古树精",
+      "breakpoints": [
+        1
+      ],
+      "icon": "/tft/traits/18-maokai-uniquetrait.png",
+      "unique": true
+    },
+    {
+      "id": "18-battlemage",
+      "apiName": "DA_18_Battlemage",
+      "name": "魔岩巨兽",
+      "breakpoints": [
+        1
+      ],
+      "icon": "/tft/traits/18-battlemage.png",
+      "unique": true
+    },
+    {
+      "id": "primal18",
+      "apiName": "DA_Primal18",
+      "name": "野兽之灵",
+      "breakpoints": [
+        2,
+        4
+      ],
+      "icon": "/tft/traits/primal18.png",
+      "unique": false
+    },
+    {
+      "id": "18-greenfather",
+      "apiName": "DA_18_Greenfather",
+      "name": "翠神",
+      "breakpoints": [
+        1
+      ],
+      "icon": "/tft/traits/18-greenfather.png",
+      "unique": true
+    },
+    {
+      "id": "18-invoker",
+      "apiName": "DA_18_Invoker",
+      "name": "神谕",
+      "breakpoints": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "icon": "/tft/traits/18-invoker.png",
+      "unique": false
+    },
+    {
+      "id": "18-rapidfire",
+      "apiName": "DA_18_Rapidfire",
+      "name": "迅捷射手",
+      "breakpoints": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "icon": "/tft/traits/18-rapidfire.png",
+      "unique": false
+    },
+    {
+      "id": "juggernaut18",
+      "apiName": "DA_Juggernaut18",
+      "name": "主宰",
+      "breakpoints": [
+        2,
+        4,
+        6
+      ],
+      "icon": "/tft/traits/juggernaut18.png",
+      "unique": false
+    },
+    {
+      "id": "18-inferno",
+      "apiName": "DA_18_Inferno",
+      "name": "地狱火",
+      "breakpoints": [
+        2,
+        3,
+        5,
+        7
+      ],
+      "icon": "/tft/traits/18-inferno.png",
+      "unique": false
+    },
+    {
+      "id": "aluneuniquetrait18",
+      "apiName": "DA_AluneUniqueTrait18",
+      "name": "月华神女",
+      "breakpoints": [
+        1
+      ],
+      "icon": "/tft/traits/aluneuniquetrait18.png",
+      "unique": true
+    },
+    {
+      "id": "18-rival",
+      "apiName": "DA_18_Rival",
+      "name": "宿敌",
+      "breakpoints": [
+        1,
+        1,
+        2
+      ],
+      "icon": "/tft/traits/18-rival.png",
+      "unique": false
+    },
+    {
+      "id": "18-vanguard",
+      "apiName": "DA_18_Vanguard",
+      "name": "重装战士",
+      "breakpoints": [
+        2,
+        4,
+        6
+      ],
+      "icon": "/tft/traits/18-vanguard.png",
+      "unique": false
+    },
+    {
+      "id": "18-brawler",
+      "apiName": "DA_18_Brawler",
+      "name": "斗士",
+      "breakpoints": [
+        2,
+        4,
+        6
+      ],
+      "icon": "/tft/traits/18-brawler.png",
+      "unique": false
+    },
+    {
+      "id": "18-blackthorn",
+      "apiName": "DA_18_Blackthorn",
+      "name": "黑荆棘",
+      "breakpoints": [
+        2,
+        4,
+        6
+      ],
+      "icon": "/tft/traits/18-blackthorn.png",
+      "unique": false
+    },
+    {
+      "id": "18-executioner",
+      "apiName": "DA_18_Executioner",
+      "name": "裁决使",
+      "breakpoints": [
+        2,
+        3,
+        4
+      ],
+      "icon": "/tft/traits/18-executioner.png",
+      "unique": false
+    },
+    {
+      "id": "18-apexpredator",
+      "apiName": "DA_18_ApexPredator",
+      "name": "顶级掠食者",
+      "breakpoints": [
+        1
+      ],
+      "icon": "/tft/traits/18-apexpredator.png",
+      "unique": true
+    },
+    {
+      "id": "riftbeast18",
+      "apiName": "DA_Riftbeast18",
+      "name": "峡谷野怪",
+      "breakpoints": [
+        3,
+        5,
+        7,
+        10
+      ],
+      "icon": "/tft/traits/riftbeast18.png",
+      "unique": false
+    },
+    {
+      "id": "18-caustic",
+      "apiName": "DA_18_Caustic",
+      "name": "帝王斑蝶",
+      "breakpoints": [
+        1
+      ],
+      "icon": "/tft/traits/18-caustic.png",
+      "unique": true
+    },
+    {
+      "id": "18-fae",
+      "apiName": "DA_18_Fae",
+      "name": "花仙子",
+      "breakpoints": [
+        2,
+        4
+      ],
+      "icon": "/tft/traits/18-fae.png",
+      "unique": false
+    },
+    {
+      "id": "18-lunar",
+      "apiName": "DA_18_Lunar",
+      "name": "月蚀骑士",
+      "breakpoints": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "icon": "/tft/traits/18-lunar.png",
+      "unique": false
+    },
+    {
+      "id": "18-defender",
+      "apiName": "DA_18_Defender",
+      "name": "护卫",
+      "breakpoints": [
+        2,
+        4,
+        6
+      ],
+      "icon": "/tft/traits/18-defender.png",
+      "unique": false
+    },
+    {
+      "id": "18-spellweaver",
+      "apiName": "DA_18_Spellweaver",
+      "name": "法师",
+      "breakpoints": [
+        2,
+        4,
+        6
+      ],
+      "icon": "/tft/traits/18-spellweaver.png",
+      "unique": false
+    },
+    {
+      "id": "18-zyrauniquetrait",
+      "apiName": "DA_18_ZyraUniqueTrait",
+      "name": "荆棘之兴",
+      "breakpoints": [
+        1
+      ],
+      "icon": "/tft/traits/18-zyrauniquetrait.png",
+      "unique": true
+    },
+    {
+      "id": "florafatalis18",
+      "apiName": "DA_FloraFatalis18",
+      "name": "绝命花妖",
+      "breakpoints": [
+        1,
+        2
+      ],
+      "icon": "/tft/traits/florafatalis18.png",
+      "unique": false
+    },
+    {
+      "id": "18-summoner",
+      "apiName": "DA_18_Summoner",
+      "name": "召唤师",
+      "breakpoints": [
+        2,
+        3
+      ],
+      "icon": "/tft/traits/18-summoner.png",
+      "unique": false
+    },
+    {
+      "id": "18-blossom",
+      "apiName": "DA_18_Blossom",
+      "name": "灵魂莲华",
+      "breakpoints": [
+        3,
+        5,
+        7,
+        9,
+        11
+      ],
+      "icon": "/tft/traits/18-blossom.png",
+      "unique": false
+    },
+    {
+      "id": "emerald18",
+      "apiName": "DA_Emerald18",
+      "name": "宝石骑士",
+      "breakpoints": [
+        1
+      ],
+      "icon": "/tft/traits/emerald18.png",
+      "unique": true
+    }
+  ],
+  "champions": [
+    {
+      "id": "gromp18-ap",
+      "apiName": "DA_Gromp18_AP",
+      "name": "魔沼蛙",
+      "cost": 2,
+      "traits": [
+        "峡谷野怪",
+        "魔战士"
+      ],
+      "traitWeights": {
+        "峡谷野怪": 1,
+        "魔战士": 1
+      },
+      "image": "/tft/champions/gromp18-ap.png",
+      "group": "DA_Gromp18_AP"
+    },
+    {
+      "id": "murkwolf18",
+      "apiName": "DA_Murkwolf18",
+      "name": "暗影狼",
+      "cost": 2,
+      "traits": [
+        "峡谷野怪",
+        "狂战士"
+      ],
+      "traitWeights": {
+        "峡谷野怪": 1,
+        "狂战士": 1
+      },
+      "image": "/tft/champions/murkwolf18.png",
+      "group": "DA_Murkwolf18"
+    },
+    {
+      "id": "18-sentry",
+      "apiName": "DA_18_Sentry",
+      "name": "苍蓝哨戒",
+      "cost": 1,
+      "traits": [
+        "峡谷野怪",
+        "神谕"
+      ],
+      "traitWeights": {
+        "峡谷野怪": 1,
+        "神谕": 1
+      },
+      "image": "/tft/champions/18-sentry.png",
+      "group": "DA_18_Sentry"
+    },
+    {
+      "id": "cinderling18",
+      "apiName": "DA_Cinderling18",
+      "name": "绯红树怪",
+      "cost": 1,
+      "traits": [
+        "峡谷野怪",
+        "猎人"
+      ],
+      "traitWeights": {
+        "峡谷野怪": 1,
+        "猎人": 1
+      },
+      "image": "/tft/champions/cinderling18.png",
+      "group": "DA_Cinderling18"
+    },
+    {
+      "id": "scuttlecrab18",
+      "apiName": "DA_Scuttlecrab18",
+      "name": "峡谷迅捷蟹",
+      "cost": 2,
+      "traits": [
+        "峡谷野怪",
+        "主宰"
+      ],
+      "traitWeights": {
+        "峡谷野怪": 1,
+        "主宰": 1
+      },
+      "image": "/tft/champions/scuttlecrab18.png",
+      "group": "DA_Scuttlecrab18"
+    },
+    {
+      "id": "krug18",
+      "apiName": "DA_Krug18",
+      "name": "远古石甲虫",
+      "cost": 3,
+      "traits": [
+        "峡谷野怪",
+        "斗士"
+      ],
+      "traitWeights": {
+        "峡谷野怪": 1,
+        "斗士": 1
+      },
+      "image": "/tft/champions/krug18.png",
+      "group": "DA_Krug18"
+    },
+    {
+      "id": "sentinel18",
+      "apiName": "DA_Sentinel18",
+      "name": "苍蓝雕纹魔像",
+      "cost": 4,
+      "traits": [
+        "峡谷野怪",
+        "重装战士",
+        "神谕"
+      ],
+      "traitWeights": {
+        "峡谷野怪": 1,
+        "重装战士": 1,
+        "神谕": 1
+      },
+      "image": "/tft/champions/sentinel18.png",
+      "group": "DA_Sentinel18"
+    },
+    {
+      "id": "brambleback18",
+      "apiName": "DA_Brambleback18",
+      "name": "绯红印记树怪",
+      "cost": 4,
+      "traits": [
+        "峡谷野怪",
+        "狂战士"
+      ],
+      "traitWeights": {
+        "峡谷野怪": 1,
+        "狂战士": 1
+      },
+      "image": "/tft/champions/brambleback18.png",
+      "group": "DA_Brambleback18"
+    },
+    {
+      "id": "18-xayah",
+      "apiName": "DA_18_Xayah",
+      "name": "霞",
+      "cost": 1,
+      "traits": [
+        "永恒之森",
+        "花仙子",
+        "迅捷射手"
+      ],
+      "traitWeights": {
+        "永恒之森": 1,
+        "花仙子": 1,
+        "迅捷射手": 1
+      },
+      "image": "/tft/champions/18-xayah.png",
+      "group": "DA_18_Xayah"
+    },
+    {
+      "id": "18-ornn",
+      "apiName": "DA_18_Ornn",
+      "name": "奥恩",
+      "cost": 1,
+      "traits": [
+        "永恒之森",
+        "护卫"
+      ],
+      "traitWeights": {
+        "永恒之森": 1,
+        "护卫": 1
+      },
+      "image": "/tft/champions/18-ornn.png",
+      "group": "DA_18_Ornn"
+    },
+    {
+      "id": "nidalee18-ap",
+      "apiName": "DA_Nidalee18_AP",
+      "name": "奈德丽",
+      "cost": 4,
+      "traits": [
+        "野兽之灵",
+        "魔战士"
+      ],
+      "traitWeights": {
+        "野兽之灵": 1,
+        "魔战士": 1
+      },
+      "image": "/tft/champions/nidalee18-ap.png",
+      "group": "DA_Nidalee18_AP"
+    },
+    {
+      "id": "18-hecarim",
+      "apiName": "DA_18_Hecarim",
+      "name": "赫卡里姆",
+      "cost": 3,
+      "traits": [
+        "永恒之森",
+        "重装战士"
+      ],
+      "traitWeights": {
+        "永恒之森": 1,
+        "重装战士": 1
+      },
+      "image": "/tft/champions/18-hecarim.png",
+      "group": "DA_18_Hecarim"
+    },
+    {
+      "id": "18-ezreal",
+      "apiName": "DA_18_Ezreal",
+      "name": "伊泽瑞尔",
+      "cost": 4,
+      "traits": [
+        "永恒之森",
+        "裁决使"
+      ],
+      "traitWeights": {
+        "永恒之森": 1,
+        "裁决使": 1
+      },
+      "image": "/tft/champions/18-ezreal.png",
+      "group": "DA_18_Ezreal"
+    },
+    {
+      "id": "18-azir",
+      "apiName": "DA_18_Azir",
+      "name": "阿兹尔",
+      "cost": 3,
+      "traits": [
+        "黑荆棘",
+        "裁决使",
+        "召唤师"
+      ],
+      "traitWeights": {
+        "黑荆棘": 1,
+        "裁决使": 1,
+        "召唤师": 1
+      },
+      "image": "/tft/champions/18-azir.png",
+      "group": "DA_18_Azir"
+    },
+    {
+      "id": "18-reksai",
+      "apiName": "DA_18_RekSai",
+      "name": "雷克塞",
+      "cost": 1,
+      "traits": [
+        "黑荆棘",
+        "斗士"
+      ],
+      "traitWeights": {
+        "黑荆棘": 1,
+        "斗士": 1
+      },
+      "image": "/tft/champions/18-reksai.png",
+      "group": "DA_18_RekSai"
+    },
+    {
+      "id": "18-veigar",
+      "apiName": "DA_18_Veigar",
+      "name": "维迦",
+      "cost": 1,
+      "traits": [
+        "黑荆棘",
+        "约德尔人和朋友",
+        "法师"
+      ],
+      "traitWeights": {
+        "黑荆棘": 1,
+        "约德尔人和朋友": 1,
+        "法师": 1
+      },
+      "image": "/tft/champions/18-veigar.png",
+      "group": "DA_18_Veigar"
+    },
+    {
+      "id": "18-maokai",
+      "apiName": "DA_18_Maokai",
+      "name": "茂凯",
+      "cost": 5,
+      "traits": [
+        "远古树精",
+        "主宰"
+      ],
+      "traitWeights": {
+        "远古树精": 1,
+        "主宰": 1
+      },
+      "image": "/tft/champions/18-maokai.png",
+      "group": "DA_18_Maokai"
+    },
+    {
+      "id": "18-malphite",
+      "apiName": "DA_18_Malphite",
+      "name": "墨菲特",
+      "cost": 4,
+      "traits": [
+        "黑荆棘",
+        "魔岩巨兽"
+      ],
+      "traitWeights": {
+        "黑荆棘": 1,
+        "魔岩巨兽": 1
+      },
+      "image": "/tft/champions/18-malphite.png",
+      "group": "DA_18_Malphite"
+    },
+    {
+      "id": "18-yorick",
+      "apiName": "DA_18_Yorick",
+      "name": "约里克",
+      "cost": 1,
+      "traits": [
+        "灵魂莲华",
+        "主宰",
+        "召唤师"
+      ],
+      "traitWeights": {
+        "灵魂莲华": 1,
+        "主宰": 1,
+        "召唤师": 1
+      },
+      "image": "/tft/champions/18-yorick.png",
+      "group": "DA_18_Yorick"
+    },
+    {
+      "id": "18-yunara",
+      "apiName": "DA_18_Yunara",
+      "name": "芸阿娜",
+      "cost": 2,
+      "traits": [
+        "灵魂莲华",
+        "裁决使"
+      ],
+      "traitWeights": {
+        "灵魂莲华": 1,
+        "裁决使": 1
+      },
+      "image": "/tft/champions/18-yunara.png",
+      "group": "DA_18_Yunara"
+    },
+    {
+      "id": "18-sett",
+      "apiName": "DA_18_Sett",
+      "name": "瑟提",
+      "cost": 4,
+      "traits": [
+        "灵魂莲华",
+        "斗士"
+      ],
+      "traitWeights": {
+        "灵魂莲华": 1,
+        "斗士": 1
+      },
+      "image": "/tft/champions/18-sett.png",
+      "group": "DA_18_Sett"
+    },
+    {
+      "id": "18-ahri",
+      "apiName": "DA_18_Ahri",
+      "name": "阿狸",
+      "cost": 4,
+      "traits": [
+        "灵魂莲华",
+        "法师"
+      ],
+      "traitWeights": {
+        "灵魂莲华": 1,
+        "法师": 1
+      },
+      "image": "/tft/champions/18-ahri.png",
+      "group": "DA_18_Ahri"
+    },
+    {
+      "id": "18-ashe",
+      "apiName": "DA_18_Ashe",
+      "name": "艾希",
+      "cost": 5,
+      "traits": [
+        "灵魂莲华",
+        "猎人"
+      ],
+      "traitWeights": {
+        "灵魂莲华": 1,
+        "猎人": 1
+      },
+      "image": "/tft/champions/18-ashe.png",
+      "group": "DA_18_Ashe"
+    },
+    {
+      "id": "18-elise",
+      "apiName": "DA_18_Elise",
+      "name": "伊莉丝",
+      "cost": 2,
+      "traits": [
+        "魔女",
+        "重装战士"
+      ],
+      "traitWeights": {
+        "魔女": 1,
+        "重装战士": 1
+      },
+      "image": "/tft/champions/18-elise.png",
+      "group": "DA_18_Elise"
+    },
+    {
+      "id": "18-caitlyn",
+      "apiName": "DA_18_Caitlyn",
+      "name": "凯特琳",
+      "cost": 2,
+      "traits": [
+        "魔女",
+        "猎人"
+      ],
+      "traitWeights": {
+        "魔女": 1,
+        "猎人": 1
+      },
+      "image": "/tft/champions/18-caitlyn.png",
+      "group": "DA_18_Caitlyn"
+    },
+    {
+      "id": "18-cassiopeia",
+      "apiName": "DA_18_Cassiopeia",
+      "name": "卡西奥佩娅",
+      "cost": 3,
+      "traits": [
+        "魔女",
+        "法师"
+      ],
+      "traitWeights": {
+        "魔女": 1,
+        "法师": 1
+      },
+      "image": "/tft/champions/18-cassiopeia.png",
+      "group": "DA_18_Cassiopeia"
+    },
+    {
+      "id": "18-morgana",
+      "apiName": "DA_18_Morgana",
+      "name": "莫甘娜",
+      "cost": 4,
+      "traits": [
+        "魔女",
+        "神谕"
+      ],
+      "traitWeights": {
+        "魔女": 1,
+        "神谕": 1
+      },
+      "image": "/tft/champions/18-morgana.png",
+      "group": "DA_18_Morgana"
+    },
+    {
+      "id": "18-rakan",
+      "apiName": "DA_18_Rakan",
+      "name": "洛",
+      "cost": 1,
+      "traits": [
+        "花仙子",
+        "主宰",
+        "重装战士"
+      ],
+      "traitWeights": {
+        "花仙子": 1,
+        "主宰": 1,
+        "重装战士": 1
+      },
+      "image": "/tft/champions/18-rakan.png",
+      "group": "DA_18_Rakan"
+    },
+    {
+      "id": "18-lillia",
+      "apiName": "DA_18_Lillia",
+      "name": "莉莉娅",
+      "cost": 4,
+      "traits": [
+        "花仙子",
+        "护卫"
+      ],
+      "traitWeights": {
+        "花仙子": 1,
+        "护卫": 1
+      },
+      "image": "/tft/champions/18-lillia.png",
+      "group": "DA_18_Lillia"
+    },
+    {
+      "id": "18-kobuko",
+      "apiName": "DA_18_Kobuko",
+      "name": "可酷伯",
+      "cost": 1,
+      "traits": [
+        "约德尔人和朋友",
+        "斗士"
+      ],
+      "traitWeights": {
+        "约德尔人和朋友": 1,
+        "斗士": 1
+      },
+      "image": "/tft/champions/18-kobuko.png",
+      "group": "DA_18_Kobuko"
+    },
+    {
+      "id": "18-teemo",
+      "apiName": "DA_18_Teemo",
+      "name": "提莫",
+      "cost": 2,
+      "traits": [
+        "约德尔人和朋友",
+        "神谕"
+      ],
+      "traitWeights": {
+        "约德尔人和朋友": 1,
+        "神谕": 1
+      },
+      "image": "/tft/champions/18-teemo.png",
+      "group": "DA_18_Teemo"
+    },
+    {
+      "id": "18-rammus",
+      "apiName": "DA_18_Rammus",
+      "name": "拉莫斯",
+      "cost": 3,
+      "traits": [
+        "约德尔人和朋友",
+        "护卫"
+      ],
+      "traitWeights": {
+        "约德尔人和朋友": 1,
+        "护卫": 1
+      },
+      "image": "/tft/champions/18-rammus.png",
+      "group": "DA_18_Rammus"
+    },
+    {
+      "id": "18-gnarsmall",
+      "apiName": "DA_18_GnarSmall",
+      "name": "纳尔",
+      "cost": 5,
+      "traits": [
+        "永恒之森",
+        "约德尔人和朋友",
+        "斗士"
+      ],
+      "traitWeights": {
+        "永恒之森": 1,
+        "约德尔人和朋友": 1,
+        "斗士": 1
+      },
+      "image": "/tft/champions/18-gnarsmall.png",
+      "group": "DA_18_GnarSmall"
+    },
+    {
+      "id": "18-tristana",
+      "apiName": "DA_18_Tristana",
+      "name": "崔丝塔娜",
+      "cost": 3,
+      "traits": [
+        "花仙子",
+        "约德尔人和朋友",
+        "猎人"
+      ],
+      "traitWeights": {
+        "花仙子": 1,
+        "约德尔人和朋友": 1,
+        "猎人": 1
+      },
+      "image": "/tft/champions/18-tristana.png",
+      "group": "DA_18_Tristana"
+    },
+    {
+      "id": "18-sivir",
+      "apiName": "DA_18_Sivir",
+      "name": "希维尔",
+      "cost": 4,
+      "traits": [
+        "野兽之灵",
+        "猎人"
+      ],
+      "traitWeights": {
+        "野兽之灵": 1,
+        "猎人": 1
+      },
+      "image": "/tft/champions/18-sivir.png",
+      "group": "DA_18_Sivir"
+    },
+    {
+      "id": "vi18",
+      "apiName": "DA_Vi18",
+      "name": "蔚",
+      "cost": 3,
+      "traits": [
+        "野兽之灵",
+        "主宰"
+      ],
+      "traitWeights": {
+        "野兽之灵": 1,
+        "主宰": 1
+      },
+      "image": "/tft/champions/vi18.png",
+      "group": "DA_Vi18"
+    },
+    {
+      "id": "18-akali-ad",
+      "apiName": "DA_18_Akali_AD",
+      "name": "阿卡丽",
+      "cost": 1,
+      "traits": [
+        "地狱火",
+        "魔战士",
+        "狂战士"
+      ],
+      "traitWeights": {
+        "地狱火": 1,
+        "魔战士": 1,
+        "狂战士": 1
+      },
+      "image": "/tft/champions/18-akali-ad.png",
+      "group": "DA_18_Akali_AD"
+    },
+    {
+      "id": "18-varus",
+      "apiName": "DA_18_Varus",
+      "name": "韦鲁斯",
+      "cost": 1,
+      "traits": [
+        "地狱火",
+        "迅捷射手"
+      ],
+      "traitWeights": {
+        "地狱火": 1,
+        "迅捷射手": 1
+      },
+      "image": "/tft/champions/18-varus.png",
+      "group": "DA_18_Varus"
+    },
+    {
+      "id": "amumu18",
+      "apiName": "DA_Amumu18",
+      "name": "阿木木",
+      "cost": 4,
+      "traits": [
+        "地狱火",
+        "主宰"
+      ],
+      "traitWeights": {
+        "地狱火": 1,
+        "主宰": 1
+      },
+      "image": "/tft/champions/amumu18.png",
+      "group": "DA_Amumu18"
+    },
+    {
+      "id": "18-kennen",
+      "apiName": "DA_18_Kennen",
+      "name": "凯南",
+      "cost": 5,
+      "traits": [
+        "地狱火",
+        "裁决使"
+      ],
+      "traitWeights": {
+        "地狱火": 1,
+        "裁决使": 1
+      },
+      "image": "/tft/champions/18-kennen.png",
+      "group": "DA_18_Kennen"
+    },
+    {
+      "id": "18-aphelios",
+      "apiName": "DA_18_Aphelios",
+      "name": "厄斐琉斯",
+      "cost": 4,
+      "traits": [
+        "月蚀骑士",
+        "迅捷射手"
+      ],
+      "traitWeights": {
+        "月蚀骑士": 1,
+        "迅捷射手": 1
+      },
+      "image": "/tft/champions/18-aphelios.png",
+      "group": "DA_18_Aphelios"
+    },
+    {
+      "id": "18-diana",
+      "apiName": "DA_18_Diana",
+      "name": "黛安娜",
+      "cost": 3,
+      "traits": [
+        "月蚀骑士",
+        "狂战士",
+        "重装战士"
+      ],
+      "traitWeights": {
+        "月蚀骑士": 1,
+        "狂战士": 1,
+        "重装战士": 1
+      },
+      "image": "/tft/champions/18-diana.png",
+      "group": "DA_18_Diana"
+    },
+    {
+      "id": "18-alune",
+      "apiName": "DA_18_Alune",
+      "name": "拉露恩",
+      "cost": 5,
+      "traits": [
+        "月华神女",
+        "月蚀骑士",
+        "法师"
+      ],
+      "traitWeights": {
+        "月华神女": 1,
+        "月蚀骑士": 1,
+        "法师": 1
+      },
+      "image": "/tft/champions/18-alune.png",
+      "group": "DA_18_Alune"
+    },
+    {
+      "id": "18-leona",
+      "apiName": "DA_18_Leona",
+      "name": "蕾欧娜",
+      "cost": 1,
+      "traits": [
+        "日蚀骑士",
+        "护卫"
+      ],
+      "traitWeights": {
+        "日蚀骑士": 1,
+        "护卫": 1
+      },
+      "image": "/tft/champions/18-leona.png",
+      "group": "DA_18_Leona"
+    },
+    {
+      "id": "18-kayle",
+      "apiName": "DA_18_Kayle",
+      "name": "凯尔",
+      "cost": 2,
+      "traits": [
+        "日蚀骑士",
+        "迅捷射手"
+      ],
+      "traitWeights": {
+        "日蚀骑士": 1,
+        "迅捷射手": 1
+      },
+      "image": "/tft/champions/18-kayle.png",
+      "group": "DA_18_Kayle"
+    },
+    {
+      "id": "18-sejuani",
+      "apiName": "DA_18_Sejuani",
+      "name": "瑟庄妮",
+      "cost": 2,
+      "traits": [
+        "日蚀骑士",
+        "主宰"
+      ],
+      "traitWeights": {
+        "日蚀骑士": 1,
+        "主宰": 1
+      },
+      "image": "/tft/champions/18-sejuani.png",
+      "group": "DA_18_Sejuani"
+    },
+    {
+      "id": "18-khazix",
+      "apiName": "DA_18_KhaZix",
+      "name": "卡兹克",
+      "cost": 3,
+      "traits": [
+        "宿敌"
+      ],
+      "traitWeights": {
+        "宿敌": 1
+      },
+      "image": "/tft/champions/18-khazix.png",
+      "group": "DA_18_KhaZix"
+    },
+    {
+      "id": "18-rengar",
+      "apiName": "DA_18_Rengar",
+      "name": "雷恩加尔",
+      "cost": 3,
+      "traits": [
+        "宿敌"
+      ],
+      "traitWeights": {
+        "宿敌": 1
+      },
+      "image": "/tft/champions/18-rengar.png",
+      "group": "DA_18_Rengar"
+    },
+    {
+      "id": "kogmaw18-ad",
+      "apiName": "DA_KogMaw18_AD",
+      "name": "克格莫",
+      "cost": 3,
+      "traits": [
+        "帝王斑蝶",
+        "魔战士",
+        "神谕"
+      ],
+      "traitWeights": {
+        "帝王斑蝶": 1,
+        "魔战士": 1,
+        "神谕": 1
+      },
+      "image": "/tft/champions/kogmaw18-ad.png",
+      "group": "DA_KogMaw18_AD"
+    },
+    {
+      "id": "18-zyra",
+      "apiName": "DA_18_Zyra",
+      "name": "婕拉",
+      "cost": 4,
+      "traits": [
+        "荆棘之兴",
+        "召唤师"
+      ],
+      "traitWeights": {
+        "荆棘之兴": 1,
+        "召唤师": 1
+      },
+      "image": "/tft/champions/18-zyra.png",
+      "group": "DA_18_Zyra"
+    },
+    {
+      "id": "fiddlesticks18",
+      "apiName": "DA_Fiddlesticks18",
+      "name": "费德提克",
+      "cost": 3,
+      "traits": [
+        "绝命花妖",
+        "护卫",
+        "法师"
+      ],
+      "traitWeights": {
+        "绝命花妖": 1,
+        "护卫": 1,
+        "法师": 1
+      },
+      "image": "/tft/champions/fiddlesticks18.png",
+      "group": "DA_Fiddlesticks18"
+    },
+    {
+      "id": "18-soraka",
+      "apiName": "DA_18_Soraka",
+      "name": "索拉卡",
+      "cost": 4,
+      "traits": [
+        "绝命花妖",
+        "裁决使"
+      ],
+      "traitWeights": {
+        "绝命花妖": 1,
+        "裁决使": 1
+      },
+      "image": "/tft/champions/18-soraka.png",
+      "group": "DA_18_Soraka"
+    },
+    {
+      "id": "taric18",
+      "apiName": "DA_Taric18",
+      "name": "塔里克",
+      "cost": 5,
+      "traits": [
+        "宝石骑士",
+        "重装战士"
+      ],
+      "traitWeights": {
+        "宝石骑士": 1,
+        "重装战士": 1
+      },
+      "image": "/tft/champions/taric18.png",
+      "group": "DA_Taric18"
+    },
+    {
+      "id": "18-ivern",
+      "apiName": "DA_18_Ivern",
+      "name": "艾翁",
+      "cost": 5,
+      "traits": [
+        "翠神"
+      ],
+      "traitWeights": {
+        "翠神": 1
+      },
+      "image": "/tft/champions/18-ivern.png",
+      "group": "DA_18_Ivern"
+    },
+    {
+      "id": "18-alistar",
+      "apiName": "DA_18_Alistar",
+      "name": "阿利斯塔",
+      "cost": 2,
+      "traits": [
+        "永恒之森",
+        "斗士"
+      ],
+      "traitWeights": {
+        "永恒之森": 1,
+        "斗士": 1
+      },
+      "image": "/tft/champions/18-alistar.png",
+      "group": "DA_18_Alistar"
+    },
+    {
+      "id": "draven18",
+      "apiName": "DA_Draven18",
+      "name": "德莱文",
+      "cost": 5,
+      "traits": [
+        "赏金猎人"
+      ],
+      "traitWeights": {
+        "赏金猎人": 1
+      },
+      "image": "/tft/champions/draven18.png",
+      "group": "DA_Draven18"
+    },
+    {
+      "id": "18-elderdragon",
+      "apiName": "DA_18_ElderDragon",
+      "name": "远古巨龙",
+      "cost": 5,
+      "traits": [
+        "顶级掠食者",
+        "峡谷野怪"
+      ],
+      "traitWeights": {
+        "顶级掠食者": 1,
+        "峡谷野怪": 1
+      },
+      "image": "/tft/champions/18-elderdragon.png",
+      "group": "DA_18_ElderDragon"
+    },
+    {
+      "id": "karma18",
+      "apiName": "DA_Karma18",
+      "name": "卡尔玛",
+      "cost": 1,
+      "traits": [
+        "灵魂莲华",
+        "法师"
+      ],
+      "traitWeights": {
+        "灵魂莲华": 1,
+        "法师": 1
+      },
+      "image": "/tft/champions/karma18.png",
+      "group": "DA_Karma18"
+    },
+    {
+      "id": "18-leblanc",
+      "apiName": "DA_18_LeBlanc",
+      "name": "乐芙兰",
+      "cost": 2,
+      "traits": [
+        "永恒之森",
+        "法师"
+      ],
+      "traitWeights": {
+        "永恒之森": 1,
+        "法师": 1
+      },
+      "image": "/tft/champions/18-leblanc.png",
+      "group": "DA_18_LeBlanc"
+    },
+    {
+      "id": "18-masteryi-ad",
+      "apiName": "DA_18_MasterYi_AD",
+      "name": "易",
+      "cost": 3,
+      "traits": [
+        "灵魂莲华",
+        "魔战士"
+      ],
+      "traitWeights": {
+        "灵魂莲华": 1,
+        "魔战士": 1
+      },
+      "image": "/tft/champions/18-masteryi-ad.png",
+      "group": "DA_18_MasterYi_AD"
+    },
+    {
+      "id": "18-shen",
+      "apiName": "DA_18_Shen",
+      "name": "慎",
+      "cost": 2,
+      "traits": [
+        "地狱火",
+        "护卫"
+      ],
+      "traitWeights": {
+        "地狱火": 1,
+        "护卫": 1
+      },
+      "image": "/tft/champions/18-shen.png",
+      "group": "DA_18_Shen"
+    },
+    {
+      "id": "18-warwick",
+      "apiName": "DA_18_Warwick",
+      "name": "沃里克",
+      "cost": 2,
+      "traits": [
+        "黑荆棘",
+        "狂战士"
+      ],
+      "traitWeights": {
+        "黑荆棘": 1,
+        "狂战士": 1
+      },
+      "image": "/tft/champions/18-warwick.png",
+      "group": "DA_18_Warwick"
+    },
+    {
+      "id": "18-camille",
+      "apiName": "DA_18_Camille",
+      "name": "卡蜜尔",
+      "cost": 1,
+      "traits": [
+        "魔女",
+        "狂战士"
+      ],
+      "traitWeights": {
+        "魔女": 1,
+        "狂战士": 1
+      },
+      "image": "/tft/champions/18-camille.png",
+      "group": "DA_18_Camille"
+    },
+    {
+      "id": "lux18-blackthorn",
+      "apiName": "DA_Lux18_Blackthorn",
+      "name": "拉克丝 (黑荆棘)",
+      "cost": 5,
+      "traits": [
+        "黑荆棘",
+        "自然之力！大元素使"
+      ],
+      "traitWeights": {
+        "黑荆棘": 2,
+        "自然之力！大元素使": 1
+      },
+      "image": "/tft/champions/lux18-blackthorn.png",
+      "group": "lux"
+    },
+    {
+      "id": "lux18-blossom",
+      "apiName": "DA_Lux18_Blossom",
+      "name": "拉克丝 (灵魂莲华)",
+      "cost": 5,
+      "traits": [
+        "灵魂莲华",
+        "自然之力！大元素使"
+      ],
+      "traitWeights": {
+        "灵魂莲华": 2,
+        "自然之力！大元素使": 1
+      },
+      "image": "/tft/champions/lux18-blossom.png",
+      "group": "lux"
+    },
+    {
+      "id": "18-lux-coven",
+      "apiName": "DA_18_Lux_Coven",
+      "name": "拉克丝 (魔女)",
+      "cost": 5,
+      "traits": [
+        "魔女",
+        "自然之力！大元素使"
+      ],
+      "traitWeights": {
+        "魔女": 2,
+        "自然之力！大元素使": 1
+      },
+      "image": "/tft/champions/18-lux-coven.png",
+      "group": "lux"
+    },
+    {
+      "id": "18-lux-elderwood",
+      "apiName": "DA_18_Lux_Elderwood",
+      "name": "拉克丝 (永恒之森)",
+      "cost": 5,
+      "traits": [
+        "永恒之森",
+        "自然之力！大元素使"
+      ],
+      "traitWeights": {
+        "永恒之森": 2,
+        "自然之力！大元素使": 1
+      },
+      "image": "/tft/champions/18-lux-elderwood.png",
+      "group": "lux"
+    },
+    {
+      "id": "18-lux-fae",
+      "apiName": "DA_18_Lux_Fae",
+      "name": "拉克丝 (花仙子)",
+      "cost": 5,
+      "traits": [
+        "花仙子",
+        "自然之力！大元素使"
+      ],
+      "traitWeights": {
+        "花仙子": 2,
+        "自然之力！大元素使": 1
+      },
+      "image": "/tft/champions/18-lux-fae.png",
+      "group": "lux"
+    },
+    {
+      "id": "18-lux-inferno",
+      "apiName": "DA_18_Lux_Inferno",
+      "name": "拉克丝 (地狱火)",
+      "cost": 5,
+      "traits": [
+        "地狱火",
+        "自然之力！大元素使"
+      ],
+      "traitWeights": {
+        "地狱火": 2,
+        "自然之力！大元素使": 1
+      },
+      "image": "/tft/champions/18-lux-inferno.png",
+      "group": "lux"
+    },
+    {
+      "id": "18-lux-moonbeam",
+      "apiName": "DA_18_Lux_Moonbeam",
+      "name": "拉克丝 (月蚀骑士)",
+      "cost": 5,
+      "traits": [
+        "月蚀骑士",
+        "自然之力！大元素使"
+      ],
+      "traitWeights": {
+        "月蚀骑士": 2,
+        "自然之力！大元素使": 1
+      },
+      "image": "/tft/champions/18-lux-moonbeam.png",
+      "group": "lux"
+    },
+    {
+      "id": "18-lux-primal",
+      "apiName": "DA_18_Lux_Primal",
+      "name": "拉克丝 (野兽之灵)",
+      "cost": 5,
+      "traits": [
+        "野兽之灵",
+        "自然之力！大元素使"
+      ],
+      "traitWeights": {
+        "野兽之灵": 2,
+        "自然之力！大元素使": 1
+      },
+      "image": "/tft/champions/18-lux-primal.png",
+      "group": "lux"
+    },
+    {
+      "id": "18-lux-sunbeam",
+      "apiName": "DA_18_Lux_Sunbeam",
+      "name": "拉克丝 (日蚀骑士)",
+      "cost": 5,
+      "traits": [
+        "日蚀骑士",
+        "自然之力！大元素使"
+      ],
+      "traitWeights": {
+        "日蚀骑士": 2,
+        "自然之力！大元素使": 1
+      },
+      "image": "/tft/champions/18-lux-sunbeam.png",
+      "group": "lux"
+    },
+    {
+      "id": "crimsonraptor18",
+      "apiName": "DA_CrimsonRaptor18",
+      "name": "深红锋喙鸟",
+      "cost": 3,
+      "traits": [
+        "峡谷野怪",
+        "召唤师",
+        "迅捷射手"
+      ],
+      "traitWeights": {
+        "峡谷野怪": 1,
+        "召唤师": 1,
+        "迅捷射手": 1
+      },
+      "image": "/tft/champions/crimsonraptor18.png",
+      "group": "DA_CrimsonRaptor18"
+    }
+  ],
+  "emblems": [
+    {
+      "id": "18-executioner",
+      "name": "裁决使纹章",
+      "shortName": "裁决使",
+      "traitId": "18-executioner",
+      "traitName": "裁决使",
+      "icon": "/tft/emblems/18-executioner.png",
+      "source": "craftable"
+    },
+    {
+      "id": "18-inferno",
+      "name": "地狱火纹章",
+      "shortName": "地狱火",
+      "traitId": "18-inferno",
+      "traitName": "地狱火",
+      "icon": "/tft/emblems/18-inferno.png",
+      "source": "craftable"
+    },
+    {
+      "id": "18-brawler",
+      "name": "斗士纹章",
+      "shortName": "斗士",
+      "traitId": "18-brawler",
+      "traitName": "斗士",
+      "icon": "/tft/emblems/18-brawler.png",
+      "source": "craftable"
+    },
+    {
+      "id": "18-spellweaver",
+      "name": "法师纹章",
+      "shortName": "法师",
+      "traitId": "18-spellweaver",
+      "traitName": "法师",
+      "icon": "/tft/emblems/18-spellweaver.png",
+      "source": "craftable"
+    },
+    {
+      "id": "18-blackthorn",
+      "name": "黑荆棘纹章",
+      "shortName": "黑荆棘",
+      "traitId": "18-blackthorn",
+      "traitName": "黑荆棘",
+      "icon": "/tft/emblems/18-blackthorn.png",
+      "source": "craftable"
+    },
+    {
+      "id": "18-defender",
+      "name": "护卫纹章",
+      "shortName": "护卫",
+      "traitId": "18-defender",
+      "traitName": "护卫",
+      "icon": "/tft/emblems/18-defender.png",
+      "source": "drop"
+    },
+    {
+      "id": "18-fae",
+      "name": "花仙子纹章",
+      "shortName": "花仙子",
+      "traitId": "18-fae",
+      "traitName": "花仙子",
+      "icon": "/tft/emblems/18-fae.png",
+      "source": "craftable"
+    },
+    {
+      "id": "florafatalis18",
+      "name": "绝命花妖纹章",
+      "shortName": "绝命花妖",
+      "traitId": "florafatalis18",
+      "traitName": "绝命花妖",
+      "icon": "/tft/emblems/florafatalis18.png",
+      "source": "drop"
+    },
+    {
+      "id": "18-slayer",
+      "name": "狂战士纹章",
+      "shortName": "狂战士",
+      "traitId": "18-slayer",
+      "traitName": "狂战士",
+      "icon": "/tft/emblems/18-slayer.png",
+      "source": "craftable"
+    },
+    {
+      "id": "18-hunter",
+      "name": "猎人纹章",
+      "shortName": "猎人",
+      "traitId": "18-hunter",
+      "traitName": "猎人",
+      "icon": "/tft/emblems/18-hunter.png",
+      "source": "craftable"
+    },
+    {
+      "id": "18-blossom",
+      "name": "灵魂莲华纹章",
+      "shortName": "灵魂莲华",
+      "traitId": "18-blossom",
+      "traitName": "灵魂莲华",
+      "icon": "/tft/emblems/18-blossom.png",
+      "source": "craftable"
+    },
+    {
+      "id": "18-coven",
+      "name": "魔女纹章",
+      "shortName": "魔女",
+      "traitId": "18-coven",
+      "traitName": "魔女",
+      "icon": "/tft/emblems/18-coven.png",
+      "source": "drop"
+    },
+    {
+      "id": "18-invoker",
+      "name": "神谕纹章",
+      "shortName": "神谕",
+      "traitId": "18-invoker",
+      "traitName": "神谕",
+      "icon": "/tft/emblems/18-invoker.png",
+      "source": "craftable"
+    },
+    {
+      "id": "18-rapidfire",
+      "name": "迅捷射手纹章",
+      "shortName": "迅捷射手",
+      "traitId": "18-rapidfire",
+      "traitName": "迅捷射手",
+      "icon": "/tft/emblems/18-rapidfire.png",
+      "source": "craftable"
+    },
+    {
+      "id": "primal18",
+      "name": "野兽之灵纹章",
+      "shortName": "野兽之灵",
+      "traitId": "primal18",
+      "traitName": "野兽之灵",
+      "icon": "/tft/emblems/primal18.png",
+      "source": "craftable"
+    },
+    {
+      "id": "18-elderwood",
+      "name": "永恒之森纹章",
+      "shortName": "永恒之森",
+      "traitId": "18-elderwood",
+      "traitName": "永恒之森",
+      "icon": "/tft/emblems/18-elderwood.png",
+      "source": "craftable"
+    },
+    {
+      "id": "18-sprykin",
+      "name": "约德尔人和朋友纹章",
+      "shortName": "约德尔人和朋友",
+      "traitId": "18-sprykin",
+      "traitName": "约德尔人和朋友",
+      "icon": "/tft/emblems/18-sprykin.png",
+      "source": "craftable"
+    },
+    {
+      "id": "18-lunar",
+      "name": "月蚀骑士纹章",
+      "shortName": "月蚀骑士",
+      "traitId": "18-lunar",
+      "traitName": "月蚀骑士",
+      "icon": "/tft/emblems/18-lunar.png",
+      "source": "craftable"
+    },
+    {
+      "id": "18-vanguard",
+      "name": "重装战士纹章",
+      "shortName": "重装战士",
+      "traitId": "18-vanguard",
+      "traitName": "重装战士",
+      "icon": "/tft/emblems/18-vanguard.png",
+      "source": "craftable"
+    },
+    {
+      "id": "juggernaut18",
+      "name": "主宰纹章",
+      "shortName": "主宰",
+      "traitId": "juggernaut18",
+      "traitName": "主宰",
+      "icon": "/tft/emblems/juggernaut18.png",
+      "source": "drop"
+    }
+  ],
+  "khazixEvolutionTraits": [
+    "裁决使",
+    "迅捷射手",
+    "狂战士",
+    "法师"
+  ]
+}
