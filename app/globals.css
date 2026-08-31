@@ -233,6 +233,12 @@ body {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.26);
   }
 
+  .emblem-group-divider {
+    margin-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.075);
+    padding-top: 12px;
+  }
+
   .selected-emblem {
     display: inline-flex;
     height: 30px;
@@ -288,6 +294,37 @@ body {
   .score-badge strong { font-size: 24px; line-height: 1; color: #ecd78e; }
   .score-badge span { font-size: 11px; }
 
+  .variant-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    padding-bottom: 9px;
+    scroll-snap-type: x mandatory;
+    scrollbar-color: rgba(213, 184, 98, 0.35) rgba(255, 255, 255, 0.035);
+    scrollbar-width: thin;
+  }
+
+  .variant-scroll::-webkit-scrollbar { height: 7px; }
+  .variant-scroll::-webkit-scrollbar-track {
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.035);
+  }
+  .variant-scroll::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(213, 184, 98, 0.32);
+  }
+
+  .variant-board {
+    flex: 0 0 100%;
+    min-width: 660px;
+    border: 1px solid rgba(255, 255, 255, 0.065);
+    border-radius: 14px;
+    padding: 14px;
+    background: rgba(0, 0, 0, 0.075);
+    scroll-snap-align: start;
+  }
+
   .champion-card { min-width: 0; text-align: center; }
   .champion-card h3 {
     margin-top: 7px;
@@ -326,8 +363,8 @@ body {
 
   .board-grid {
     display: grid;
-    min-width: 700px;
-    grid-template-columns: repeat(var(--board-size), minmax(58px, 1fr));
+    min-width: 0;
+    grid-template-columns: repeat(var(--board-size), minmax(42px, 1fr));
     gap: 9px;
   }
 
@@ -427,5 +464,5 @@ body {
 
   .level-button strong { order: -1; font-size: 20px; }
   .level-button small { display: none; }
-  .board-grid { min-width: 620px; }
+  .variant-board { min-width: 620px; }
 }

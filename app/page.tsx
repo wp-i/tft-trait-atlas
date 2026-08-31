@@ -2,13 +2,10 @@
 
 import { createElement, useEffect, useMemo, useState, type ImgHTMLAttributes } from 'react';
 import {
-  ChevronLeft,
-  ChevronRight,
   Info,
   Leaf,
   LoaderCircle,
   RotateCcw,
-  Sparkles,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -23,6 +20,22 @@ const data = rawData as unknown as TftData;
 const levels = [8, 9, 10, 11] as const;
 const defaultEmblem = data.emblems.find((emblem) => emblem.shortName === '地狱火')!;
 const defaultCounts = { [defaultEmblem.id]: 1 };
+const professionEmblemIds = new Set([
+  '18-executioner',
+  '18-brawler',
+  '18-spellweaver',
+  '18-defender',
+  '18-slayer',
+  '18-hunter',
+  '18-invoker',
+  '18-rapidfire',
+  '18-vanguard',
+  'juggernaut18',
+]);
+const emblemGroups = [
+  data.emblems.filter((emblem) => professionEmblemIds.has(emblem.id)),
+  data.emblems.filter((emblem) => !professionEmblemIds.has(emblem.id)),
+];
 const costColors: Record<number, string> = {
   1: '#8a9690',
   2: '#55a873',
@@ -44,7 +57,6 @@ function StaticImage({
 export default function Home() {
   const [emblemCounts, setEmblemCounts] = useState<Record<string, number>>(defaultCounts);
   const [activeLevel, setActiveLevel] = useState<(typeof levels)[number]>(8);
-  const [variantIndex, setVariantIndex] = useState(0);
   const [evolvedKhazix, setEvolvedKhazix] = useState(false);
   const [results, setResults] = useState<Partial<Record<number, BoardResult[]>>>({});
   const [loading, setLoading] = useState(true);
@@ -57,7 +69,6 @@ export default function Home() {
   );
   const totalEmblems = Object.values(emblemCounts).reduce((sum, count) => sum + count, 0);
   const variants = results[activeLevel] ?? [];
-  const result = variants[variantIndex] ?? variants[0];
   const previousResult = results[activeLevel - 1]?.[0];
   const previousGroups = new Set(previousResult?.champions.map((champion) => champion.group));
 
@@ -69,7 +80,6 @@ export default function Home() {
       setLoading(true);
       setError('');
       setResults({});
-      setVariantIndex(0);
       try {
         for (const level of levels) {
           const boards = await optimizeBoards(data, level, emblemCounts, evolvedKhazix, 2);
@@ -101,8 +111,8 @@ export default function Home() {
     });
   };
 
-  const assignedEmblems = (championId: string) =>
-    (result?.emblemAssignments ?? [])
+  const assignedEmblems = (board: BoardResult, championId: string) =>
+    board.emblemAssignments
       .filter((assignment) => assignment.championId === championId)
       .map((assignment) => data.emblems.find((emblem) => emblem.traitId === assignment.traitId))
       .filter(Boolean);
@@ -113,10 +123,7 @@ export default function Home() {
         <div className="mx-auto flex h-16 max-w-[1500px] items-center justify-between px-5 lg:px-8">
           <div className="flex items-center gap-3">
             <div className="brand-mark"><Leaf className="size-4" /></div>
-            <div>
-              <p className="text-sm font-semibold tracking-[0.15em] text-[#f0e7ca]">羁绊云图</p>
-              <p className="text-[10px] uppercase tracking-[0.18em] text-[#7c9188]">Trait Atlas</p>
-            </div>
+            <p className="text-sm font-semibold tracking-[0.15em] text-[#f0e7ca]">羁绊天梯</p>
           </div>
           <div className="flex items-center gap-2 text-xs text-[#8fa097]">
             <span className="status-dot" />
@@ -125,25 +132,7 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="mx-auto max-w-[1500px] px-5 pb-14 pt-8 lg:px-8">
-        <div className="mb-7 flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
-          <div>
-            <div className="mb-2 flex items-center gap-2 text-xs font-medium tracking-[0.16em] text-[#bfa864]">
-              <Sparkles className="size-3.5" /> ENCHANTED WILDS
-            </div>
-            <h1 className="text-[clamp(1.8rem,4vw,3.3rem)] font-semibold leading-[1.05] tracking-[-0.045em] text-[#f3eedf]">
-              你的纹章，能拼出多少羁绊？
-            </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-[#879a91]">
-              录入纹章数量，分别计算 8 至 11 人口的非唯一羁绊上限。所有英雄、羁绊与图标都已打包，可完全离线使用。
-            </p>
-          </div>
-          <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.035] px-4 py-3 text-sm text-[#b8c3bd]">
-            <span className="text-2xl font-semibold text-[#ebd99b]">{totalEmblems}</span>
-            <span className="leading-4">枚已选纹章<br /><small className="text-[#667a71]">单种最多录入 3 枚</small></span>
-          </div>
-        </div>
-
+      <section className="mx-auto max-w-[1500px] px-5 pb-14 pt-5 lg:px-8">
         <div className="grid items-start gap-5 xl:grid-cols-[minmax(380px,0.78fr)_minmax(660px,1.42fr)]">
           <section className="panel p-4 sm:p-5 xl:sticky xl:top-5" aria-labelledby="emblem-heading">
             <div className="mb-4 flex items-center justify-between">
@@ -151,42 +140,56 @@ export default function Home() {
                 <p className="eyebrow">STEP 01</p>
                 <h2 id="emblem-heading" className="mt-1 text-lg font-semibold text-[#e9e4d8]">录入纹章</h2>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-[#7f9188] hover:bg-white/5 hover:text-[#d8e0dc]"
-                onClick={() => setEmblemCounts({})}
-                disabled={totalEmblems === 0}
-              >
-                <RotateCcw /> 清空
-              </Button>
+              <div className="flex items-center gap-2">
+                <span className="rounded-lg border border-white/7 bg-white/[0.025] px-2.5 py-1.5 text-xs text-[#a9b6af]">
+                  已选 <b className="text-[#e6d28d]">{totalEmblems}</b> 枚
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-[#7f9188] hover:bg-white/5 hover:text-[#d8e0dc]"
+                  onClick={() => setEmblemCounts({})}
+                  disabled={totalEmblems === 0}
+                >
+                  <RotateCcw /> 清空
+                </Button>
+              </div>
             </div>
 
             <p className="mb-3 text-xs leading-5 text-[#687d73]">
               每次点击增加 1 枚；第 4 次点击归零。纹章会自动分配给不具备该羁绊的弈子。
             </p>
-            <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
-              {data.emblems.map((emblem) => {
-                const count = emblemCounts[emblem.id] ?? 0;
-                return (
-                  <button
-                    key={emblem.id}
-                    type="button"
-                    aria-label={`${emblem.name}，当前 ${count} 枚，点击增加`}
-                    onClick={() => cycleEmblem(emblem.id)}
-                    className="emblem-button group relative"
-                    data-active={count > 0}
-                  >
-                    {count > 0 && <span className="emblem-count">{count}</span>}
-                    <span className="emblem-image-wrap">
-                      <StaticImage unoptimized src={staticAsset(emblem.icon)} alt="" width={42} height={42} className="size-full object-cover" />
-                    </span>
-                    <span className="mt-1.5 line-clamp-1 text-[11px] text-[#9fafa7] group-data-[active=true]:text-[#f1e5bc]">
-                      {emblem.shortName}
-                    </span>
-                  </button>
-                );
-              })}
+            <div>
+              {emblemGroups.map((group, groupIndex) => (
+                <div
+                  key={groupIndex}
+                  className={groupIndex > 0 ? 'emblem-group-divider' : undefined}
+                >
+                  <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
+                    {group.map((emblem) => {
+                      const count = emblemCounts[emblem.id] ?? 0;
+                      return (
+                        <button
+                          key={emblem.id}
+                          type="button"
+                          aria-label={`${emblem.name}，当前 ${count} 枚，点击增加`}
+                          onClick={() => cycleEmblem(emblem.id)}
+                          className="emblem-button group relative"
+                          data-active={count > 0}
+                        >
+                          {count > 0 && <span className="emblem-count">{count}</span>}
+                          <span className="emblem-image-wrap">
+                            <StaticImage unoptimized src={staticAsset(emblem.icon)} alt="" width={42} height={42} className="size-full object-cover" />
+                          </span>
+                          <span className="mt-1.5 line-clamp-1 text-[11px] text-[#9fafa7] group-data-[active=true]:text-[#f1e5bc]">
+                            {emblem.shortName}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
 
             <div className="mt-4 min-h-14 rounded-xl border border-white/7 bg-black/10 p-3">
@@ -249,7 +252,7 @@ export default function Home() {
                     <button
                       key={level}
                       type="button"
-                      onClick={() => { setActiveLevel(level); setVariantIndex(0); }}
+                      onClick={() => setActiveLevel(level)}
                       className="level-button"
                       data-active={activeLevel === level}
                     >
@@ -268,98 +271,90 @@ export default function Home() {
                   <Info className="size-5" />
                   <p>计算器暂时没有响应，请刷新后重试。</p>
                 </div>
-              ) : !result ? (
+              ) : variants.length === 0 ? (
                 <div className="empty-result min-h-72">
                   <LoaderCircle className="size-5 animate-spin" />
                   <p>正在生成 {activeLevel} 人口阵容…</p>
                 </div>
               ) : (
                 <>
-                  <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="score-badge">
-                        <strong>{result.score}</strong>
-                        <span>个激活羁绊</span>
-                      </div>
-                      <div className="text-xs leading-5 text-[#6f8379]">
-                        清单 {variantIndex + 1} / {variants.length}<br />
-                        总费用 {result.totalCost} 金币
-                      </div>
+                  {variants.length > 1 && (
+                    <div className="mb-3 flex items-center justify-end text-[11px] text-[#70837a]">
+                      向右滚动查看更多同分方案
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Button
-                        variant="outline"
-                        size="icon-sm"
-                        className="border-white/8 bg-white/[0.025] text-[#93a39b] hover:bg-white/[0.06]"
-                        disabled={variantIndex === 0}
-                        onClick={() => setVariantIndex((index) => Math.max(0, index - 1))}
-                        aria-label="上一套阵容"
-                      ><ChevronLeft /></Button>
-                      <Button
-                        variant="outline"
-                        size="icon-sm"
-                        className="border-white/8 bg-white/[0.025] text-[#93a39b] hover:bg-white/[0.06]"
-                        disabled={variantIndex >= variants.length - 1}
-                        onClick={() => setVariantIndex((index) => Math.min(variants.length - 1, index + 1))}
-                        aria-label="下一套阵容"
-                      ><ChevronRight /></Button>
-                    </div>
-                  </div>
-
-                  <div className="overflow-x-auto pb-2">
-                    <div
-                      className="board-grid"
-                      style={{ '--board-size': activeLevel } as React.CSSProperties}
-                    >
-                      {result.champions.map((champion) => {
-                        const items = assignedEmblems(champion.id);
-                        const isNew = activeLevel > 8 && !previousGroups.has(champion.group);
-                        const isEvolved = evolvedKhazix && champion.id.includes('18-khazix');
-                        const doubleTrait = Object.entries(champion.traitWeights).find(([, value]) => value > 1)?.[0];
-                        return (
-                          <article key={champion.id} className="champion-card">
-                            <div
-                              className="champion-image"
-                              style={{ '--cost': costColors[champion.cost] } as React.CSSProperties}
-                            >
-                              <StaticImage unoptimized src={staticAsset(champion.image)} alt={champion.name} width={128} height={128} />
-                              <span className="cost-badge">{champion.cost}</span>
-                              {isNew && <span className="new-badge">本级新增</span>}
-                              {items.length > 0 && (
-                                <div className="item-stack">
-                                  {items.map((emblem) => emblem && (
-                                    <StaticImage unoptimized key={emblem.id} src={staticAsset(emblem.icon)} alt={emblem.name} title={emblem.name} width={20} height={20} />
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                            <h3 title={champion.name}>{champion.name}</h3>
-                            {(isEvolved || doubleTrait) && (
-                              <p className="special-note">{isEvolved ? '满进化' : `${doubleTrait} ×2`}</p>
-                            )}
-                          </article>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  <div className="my-5 h-px bg-white/7" />
-
-                  <div className="mb-3 flex items-center justify-between">
-                    <h3 className="text-sm font-medium text-[#c5cec9]">已激活非唯一羁绊</h3>
-                    <span className="text-[11px] text-[#687b72]">数字为含纹章后的层数</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {result.activeTraits.map((trait) => {
-                      const fromEmblem = (emblemCounts[trait.id] ?? 0) > 0;
-                      return (
-                        <div key={trait.id} className="trait-pill" data-emblem={fromEmblem}>
-                          <StaticImage unoptimized src={staticAsset(trait.icon)} alt="" width={19} height={19} />
-                          <span>{trait.name}</span>
-                          <b>{trait.count}</b>
+                  )}
+                  <div
+                    className="variant-scroll"
+                    aria-label={`${activeLevel} 人口同分阵容方案`}
+                  >
+                    {variants.map((board, variantIndex) => (
+                      <article key={variantIndex} className="variant-board">
+                        <div className="mb-4 flex flex-wrap items-center gap-3">
+                          <div className="score-badge">
+                            <strong>{board.score}</strong>
+                            <span>个激活羁绊</span>
+                          </div>
+                          <div className="text-xs leading-5 text-[#6f8379]">
+                            方案 {variantIndex + 1}<br />
+                            总费用 {board.totalCost} 金币
+                          </div>
                         </div>
-                      );
-                    })}
+
+                        <div
+                          className="board-grid"
+                          style={{ '--board-size': activeLevel } as React.CSSProperties}
+                        >
+                          {board.champions.map((champion) => {
+                            const items = assignedEmblems(board, champion.id);
+                            const isNew = activeLevel > 8 && !previousGroups.has(champion.group);
+                            const isEvolved = evolvedKhazix && champion.id.includes('18-khazix');
+                            const doubleTrait = Object.entries(champion.traitWeights).find(([, value]) => value > 1)?.[0];
+                            return (
+                              <article key={champion.id} className="champion-card">
+                                <div
+                                  className="champion-image"
+                                  style={{ '--cost': costColors[champion.cost] } as React.CSSProperties}
+                                >
+                                  <StaticImage unoptimized src={staticAsset(champion.image)} alt={champion.name} width={128} height={128} />
+                                  <span className="cost-badge">{champion.cost}</span>
+                                  {isNew && <span className="new-badge">本级新增</span>}
+                                  {items.length > 0 && (
+                                    <div className="item-stack">
+                                      {items.map((emblem) => emblem && (
+                                        <StaticImage unoptimized key={emblem.id} src={staticAsset(emblem.icon)} alt={emblem.name} title={emblem.name} width={20} height={20} />
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                                <h3 title={champion.name}>{champion.name}</h3>
+                                {(isEvolved || doubleTrait) && (
+                                  <p className="special-note">{isEvolved ? '满进化' : `${doubleTrait} ×2`}</p>
+                                )}
+                              </article>
+                            );
+                          })}
+                        </div>
+
+                        <div className="my-5 h-px bg-white/7" />
+
+                        <div className="mb-3 flex items-center justify-between">
+                          <h3 className="text-sm font-medium text-[#c5cec9]">已激活非唯一羁绊</h3>
+                          <span className="text-[11px] text-[#687b72]">数字为含纹章后的层数</span>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {board.activeTraits.map((trait) => {
+                            const fromEmblem = (emblemCounts[trait.id] ?? 0) > 0;
+                            return (
+                              <div key={trait.id} className="trait-pill" data-emblem={fromEmblem}>
+                                <StaticImage unoptimized src={staticAsset(trait.icon)} alt="" width={19} height={19} />
+                                <span>{trait.name}</span>
+                                <b>{trait.count}</b>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </article>
+                    ))}
                   </div>
 
                   <div className="mt-5 flex items-start gap-2 rounded-xl border border-white/6 bg-black/10 px-3 py-2.5 text-[11px] leading-5 text-[#667a71]">
