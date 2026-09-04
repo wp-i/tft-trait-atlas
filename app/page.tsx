@@ -7,7 +7,7 @@ import {
   useState,
   type ImgHTMLAttributes,
 } from 'react';
-import { Info, Leaf, LoaderCircle, Minus, Plus, RotateCcw } from 'lucide-react';
+import { Info, Leaf, LoaderCircle, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import rawData from '@/app/data/tft-set18.json';
@@ -80,6 +80,16 @@ const craftRecipes: Record<CraftTool, Record<string, string>> = {
     '18-rapidfire': '反曲弓',
     '18-spellweaver': '无用大棒',
   },
+};
+const componentIcons: Record<string, string> = {
+  巨人腰带: '/tft/items/giants-belt.png',
+  暴风大剑: '/tft/items/bf-sword.png',
+  拳套: '/tft/items/sparring-gloves.png',
+  负极斗篷: '/tft/items/negatron-cloak.png',
+  女神之泪: '/tft/items/tear-of-the-goddess.png',
+  锁子甲: '/tft/items/chain-vest.png',
+  无用大棒: '/tft/items/needlessly-large-rod.png',
+  反曲弓: '/tft/items/recurve-bow.png',
 };
 const craftableEmblems: Record<CraftTool, TftData['emblems']> = {
   spatula: data.emblems.filter((emblem) => emblem.id in craftRecipes.spatula),
@@ -185,10 +195,10 @@ export default function Home() {
     };
   }, [craftBudgets, emblemCounts, evolvedKhazix]);
 
-  const changeCraftToolCount = (tool: CraftTool, delta: number) => {
+  const cycleCraftTool = (tool: CraftTool) => {
     setCraftToolCounts((current) => ({
       ...current,
-      [tool]: Math.max(0, Math.min(9, current[tool] + delta)),
+      [tool]: current[tool] >= 3 ? 0 : current[tool] + 1,
     }));
   };
 
@@ -230,9 +240,9 @@ export default function Home() {
       </header>
 
       <section className="mx-auto max-w-[1500px] px-5 pb-14 pt-5 lg:px-8">
-        <div className="grid items-stretch gap-5 xl:grid-cols-[minmax(380px,0.78fr)_minmax(660px,1.42fr)]">
+        <div className="grid items-start gap-5 xl:grid-cols-[minmax(380px,0.78fr)_minmax(660px,1.42fr)]">
           <section
-            className="panel h-full p-4 sm:p-5"
+            className="panel p-4 sm:p-5"
             aria-labelledby="emblem-heading"
           >
             <div className="mb-4 flex items-center justify-between">
@@ -262,25 +272,26 @@ export default function Home() {
             </div>
 
             <p className="mb-3 text-xs leading-5 text-[#687d73]">
-              每次点击增加 1 枚；第 4
+              铲、锅与纹章每次点击增加 1 枚，第 4
               次点击归零。纹章会自动分配给不具备该羁绊的弈子。
             </p>
             <div className="craft-tool-panel mb-4">
-              <div className="mb-2 flex items-center justify-between gap-3">
-                <span className="text-xs font-medium text-[#aebbb4]">
-                  额外合成件
-                </span>
-              </div>
               <div className="craft-tool-selector">
                 {craftTools.map((tool) => {
                   const meta = craftToolMeta[tool];
                   const count = craftToolCounts[tool];
                   return (
-                    <div
+                    <button
                       key={tool}
+                      type="button"
                       className="craft-tool-choice"
                       data-active={count > 0}
+                      onClick={() => cycleCraftTool(tool)}
+                      aria-label={`${meta.name}，当前 ${count} 枚，点击增加`}
                     >
+                      {count > 0 && (
+                        <span className="emblem-count">{count}</span>
+                      )}
                       <StaticImage
                         unoptimized
                         src={staticAsset(meta.icon)}
@@ -288,33 +299,11 @@ export default function Home() {
                         width={30}
                         height={30}
                       />
-                      <span>
+                      <span className="craft-tool-label">
                         <strong>{meta.name}</strong>
                         <small>{meta.scope}</small>
                       </span>
-                      <div
-                        className="craft-tool-stepper"
-                        aria-label={`${meta.name}数量`}
-                      >
-                        <button
-                          type="button"
-                          onClick={() => changeCraftToolCount(tool, -1)}
-                          disabled={count === 0}
-                          aria-label={`减少${meta.name}`}
-                        >
-                          <Minus />
-                        </button>
-                        <b>{count}</b>
-                        <button
-                          type="button"
-                          onClick={() => changeCraftToolCount(tool, 1)}
-                          disabled={count === 9}
-                          aria-label={`增加${meta.name}`}
-                        >
-                          <Plus />
-                        </button>
-                      </div>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
@@ -416,25 +405,16 @@ export default function Home() {
             </div>
           </section>
 
-          <section
-            className="panel h-full overflow-hidden"
-            aria-labelledby="result-heading"
-          >
+          <section className="panel overflow-hidden" aria-label="阵容结果">
             <div className="border-b border-white/7 p-4 sm:p-5">
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <h2
-                  id="result-heading"
-                  className="text-lg font-semibold text-[#e9e4d8]"
-                >
-                  人口上限清单
-                </h2>
-                {loading && (
+              {loading && (
+                <div className="mb-3 flex justify-end">
                   <span className="flex items-center gap-2 text-xs text-[#80948a]">
                     <LoaderCircle className="size-3.5 animate-spin" />
                     {totalCraftTools > 0 ? '正在计算合成' : '正在精确求解'}
                   </span>
-                )}
-              </div>
+                </div>
+              )}
 
               <div className="grid grid-cols-4 gap-2">
                 {levels.map((level) => {
@@ -486,14 +466,11 @@ export default function Home() {
                           </div>
                           <div className="text-xs leading-5 text-[#6f8379]">
                             方案 {variantIndex + 1}
-                            <br />
-                            总费用 {board.totalCost} 金币
                           </div>
                         </div>
 
                         {board.craftedEmblems.length > 0 && (
                           <div className="board-craft-summary">
-                            <span>推荐合成</span>
                             <div>
                               {board.craftedEmblems.map((crafted) => {
                                 const tool = crafted.toolId as CraftTool;
@@ -502,7 +479,11 @@ export default function Home() {
                                 );
                                 const component =
                                   craftRecipes[tool]?.[crafted.traitId];
-                                if (!emblem || !component) return null;
+                                const componentIcon = component
+                                  ? componentIcons[component]
+                                  : undefined;
+                                if (!emblem || !component || !componentIcon)
+                                  return null;
                                 return (
                                   <div
                                     key={`${tool}-${crafted.traitId}`}
@@ -518,7 +499,14 @@ export default function Home() {
                                       height={22}
                                     />
                                     <span>+</span>
-                                    <strong>{component}</strong>
+                                    <StaticImage
+                                      unoptimized
+                                      src={staticAsset(componentIcon)}
+                                      alt={component}
+                                      title={component}
+                                      width={22}
+                                      height={22}
+                                    />
                                     <span>→</span>
                                     <StaticImage
                                       unoptimized
@@ -528,7 +516,7 @@ export default function Home() {
                                       height={22}
                                     />
                                     <b>
-                                      {emblem.shortName}
+                                      {emblem.shortName}转
                                       {crafted.count > 1
                                         ? ` ×${crafted.count}`
                                         : ''}
@@ -628,11 +616,7 @@ export default function Home() {
                           </div>
                         )}
 
-                        <div className="my-5 h-px bg-white/7" />
-
-                        <h3 className="mb-3 text-sm font-medium text-[#c5cec9]">
-                          已激活非唯一羁绊
-                        </h3>
+                        <div className="my-4 h-px bg-white/7" />
                         <div className="flex flex-wrap gap-2">
                           {board.activeTraits.map((trait) => {
                             const fromEmblem =
