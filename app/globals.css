@@ -419,6 +419,59 @@ body {
     font-size: 11px;
   }
 
+  .team-code-button {
+    display: inline-flex;
+    min-height: 34px;
+    cursor: pointer;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    border: 1px solid rgba(124, 175, 145, 0.2);
+    border-radius: 9px;
+    padding: 0 10px;
+    color: #afc6ba;
+    font-size: 11px;
+    font-weight: 600;
+    background: rgba(124, 175, 145, 0.06);
+    transition: 140ms ease;
+  }
+
+  .team-code-button:hover:not(:disabled),
+  .team-code-button:focus-visible {
+    border-color: rgba(124, 175, 145, 0.42);
+    color: #d8e8df;
+    outline: none;
+    background: rgba(124, 175, 145, 0.11);
+  }
+
+  .team-code-button:disabled {
+    cursor: not-allowed;
+    color: #63736b;
+    background: rgba(255, 255, 255, 0.018);
+  }
+
+  .team-code-button svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .result-panel {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+  }
+
+  .result-body {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .result-body > .empty-result {
+    flex: 1;
+  }
+
   .board-craft-summary {
     margin-bottom: 16px;
     border: 1px solid rgba(213, 184, 98, 0.2);
@@ -463,6 +516,7 @@ body {
 
   .variant-scroll {
     display: flex;
+    min-height: 0;
     max-height: min(68vh, 760px);
     flex-direction: column;
     gap: 12px;
@@ -667,6 +721,13 @@ body {
     color: #71857b;
     font-size: 12px;
     background: rgba(0, 0, 0, 0.08);
+  }
+}
+
+@media (min-width: 1280px) {
+  .result-panel .variant-scroll {
+    max-height: none;
+    flex: 1;
   }
 }
 

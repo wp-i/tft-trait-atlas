@@ -10,6 +10,7 @@ export type Trait = {
 
 export type Champion = {
   id: string;
+  apiName: string;
   name: string;
   cost: number;
   traits: string[];

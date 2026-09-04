@@ -7,10 +7,11 @@ import {
   useState,
   type ImgHTMLAttributes,
 } from 'react';
-import { Info, Leaf, LoaderCircle, RotateCcw } from 'lucide-react';
+import { Check, Copy, Info, Leaf, LoaderCircle, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import rawData from '@/app/data/tft-set18.json';
+import rawPlannerCodes from '@/app/data/tft-set18-planner.json';
 import {
   optimizeBoards,
   type BoardResult,
@@ -19,6 +20,7 @@ import {
 } from '@/app/lib/optimizer';
 
 const data = rawData as unknown as TftData;
+const plannerCodes = rawPlannerCodes as Record<string, number>;
 const levels = [8, 9, 10, 11] as const;
 const defaultCounts: Record<string, number> = {};
 const professionEmblemIds = new Set([
@@ -105,6 +107,18 @@ const costColors: Record<number, string> = {
 
 const staticAsset = (src: string) => (src.startsWith('/') ? `.${src}` : src);
 
+const createTeamPlannerCode = (board: BoardResult) => {
+  if (board.champions.length > 10) return undefined;
+  const codes = board.champions.map(
+    (champion) => plannerCodes[champion.apiName],
+  );
+  if (codes.some((code) => !Number.isInteger(code))) return undefined;
+  while (codes.length < 10) codes.push(0);
+  return `02${codes
+    .map((code) => code.toString(16).padStart(3, '0'))
+    .join('')}TFTSet18`;
+};
+
 function StaticImage({
   unoptimized: _unoptimized,
   alt,
@@ -129,6 +143,7 @@ export default function Home() {
   >({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [copiedBoardKey, setCopiedBoardKey] = useState('');
 
   const selectedEmblems = useMemo(
     () => data.emblems.filter((emblem) => (emblemCounts[emblem.id] ?? 0) > 0),
@@ -220,6 +235,20 @@ export default function Home() {
       )
       .filter(Boolean);
 
+  const copyTeamPlannerCode = async (code: string, boardKey: string) => {
+    try {
+      await navigator.clipboard.writeText(code);
+    } catch {
+      return;
+    }
+    setCopiedBoardKey(boardKey);
+    window.setTimeout(
+      () =>
+        setCopiedBoardKey((current) => (current === boardKey ? '' : current)),
+      1600,
+    );
+  };
+
   return (
     <main className="min-h-screen overflow-hidden">
       <header className="border-b border-white/8 bg-[#07100e]/88 backdrop-blur-xl">
@@ -240,9 +269,9 @@ export default function Home() {
       </header>
 
       <section className="mx-auto max-w-[1500px] px-5 pb-14 pt-5 lg:px-8">
-        <div className="grid items-start gap-5 xl:grid-cols-[minmax(380px,0.78fr)_minmax(660px,1.42fr)]">
+        <div className="grid items-stretch gap-5 xl:grid-cols-[minmax(380px,0.78fr)_minmax(660px,1.42fr)]">
           <section
-            className="panel p-4 sm:p-5"
+            className="panel h-full p-4 sm:p-5"
             aria-labelledby="emblem-heading"
           >
             <div className="mb-4 flex items-center justify-between">
@@ -405,7 +434,10 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="panel overflow-hidden" aria-label="阵容结果">
+          <section
+            className="panel result-panel h-full overflow-hidden"
+            aria-label="阵容结果"
+          >
             <div className="border-b border-white/7 p-4 sm:p-5">
               {loading && (
                 <div className="mb-3 flex justify-end">
@@ -436,7 +468,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative p-4 sm:p-5">
+            <div className="result-body relative p-4 sm:p-5">
               {error ? (
                 <div className="empty-result">
                   <Info className="size-5" />
@@ -457,194 +489,227 @@ export default function Home() {
                     className="variant-scroll"
                     aria-label={`${activeLevel} 人口同分阵容方案`}
                   >
-                    {variants.map((board, variantIndex) => (
-                      <article key={variantIndex} className="variant-board">
-                        <div className="mb-4 flex flex-wrap items-center gap-3">
-                          <div className="score-badge">
-                            <strong>{board.score}</strong>
-                            <span>个激活羁绊</span>
+                    {variants.map((board, variantIndex) => {
+                      const plannerCode = createTeamPlannerCode(board);
+                      const boardKey = `${activeLevel}-${variantIndex}`;
+                      return (
+                        <article key={variantIndex} className="variant-board">
+                          <div className="mb-4 flex flex-wrap items-center gap-3">
+                            <div className="score-badge">
+                              <strong>{board.score}</strong>
+                              <span>个激活羁绊</span>
+                            </div>
+                            <div className="text-xs leading-5 text-[#6f8379]">
+                              方案 {variantIndex + 1}
+                            </div>
+                            <button
+                              type="button"
+                              className="team-code-button"
+                              disabled={!plannerCode}
+                              onClick={() =>
+                                plannerCode &&
+                                copyTeamPlannerCode(plannerCode, boardKey)
+                              }
+                              title={
+                                plannerCode
+                                  ? '复制后可粘贴到云顶之弈小队规划器'
+                                  : '小队规划器最多支持 10 名弈子'
+                              }
+                            >
+                              {plannerCode ? (
+                                copiedBoardKey === boardKey ? (
+                                  <Check />
+                                ) : (
+                                  <Copy />
+                                )
+                              ) : null}
+                              {plannerCode
+                                ? copiedBoardKey === boardKey
+                                  ? '已复制'
+                                  : '复制小队代码'
+                                : '规划器最多 10 人'}
+                            </button>
                           </div>
-                          <div className="text-xs leading-5 text-[#6f8379]">
-                            方案 {variantIndex + 1}
-                          </div>
-                        </div>
 
-                        {board.craftedEmblems.length > 0 && (
-                          <div className="board-craft-summary">
-                            <div>
-                              {board.craftedEmblems.map((crafted) => {
-                                const tool = crafted.toolId as CraftTool;
-                                const emblem = data.emblems.find(
-                                  (entry) => entry.id === crafted.traitId,
-                                );
-                                const component =
-                                  craftRecipes[tool]?.[crafted.traitId];
-                                const componentIcon = component
-                                  ? componentIcons[component]
-                                  : undefined;
-                                if (!emblem || !component || !componentIcon)
-                                  return null;
-                                return (
+                          {board.craftedEmblems.length > 0 && (
+                            <div className="board-craft-summary">
+                              <div>
+                                {board.craftedEmblems.map((crafted) => {
+                                  const tool = crafted.toolId as CraftTool;
+                                  const emblem = data.emblems.find(
+                                    (entry) => entry.id === crafted.traitId,
+                                  );
+                                  const component =
+                                    craftRecipes[tool]?.[crafted.traitId];
+                                  const componentIcon = component
+                                    ? componentIcons[component]
+                                    : undefined;
+                                  if (!emblem || !component || !componentIcon)
+                                    return null;
+                                  return (
+                                    <div
+                                      key={`${tool}-${crafted.traitId}`}
+                                      className="board-craft-item"
+                                    >
+                                      <StaticImage
+                                        unoptimized
+                                        src={staticAsset(
+                                          craftToolMeta[tool].icon,
+                                        )}
+                                        alt=""
+                                        width={22}
+                                        height={22}
+                                      />
+                                      <span>+</span>
+                                      <StaticImage
+                                        unoptimized
+                                        src={staticAsset(componentIcon)}
+                                        alt={component}
+                                        title={component}
+                                        width={22}
+                                        height={22}
+                                      />
+                                      <span>→</span>
+                                      <StaticImage
+                                        unoptimized
+                                        src={staticAsset(emblem.icon)}
+                                        alt=""
+                                        width={22}
+                                        height={22}
+                                      />
+                                      <b>
+                                        {emblem.shortName}转
+                                        {crafted.count > 1
+                                          ? ` ×${crafted.count}`
+                                          : ''}
+                                      </b>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+
+                          <div
+                            className="board-grid"
+                            style={
+                              {
+                                '--board-size': activeLevel,
+                              } as React.CSSProperties
+                            }
+                          >
+                            {board.champions.map((champion) => {
+                              const items = assignedEmblems(board, champion.id);
+                              const isNew =
+                                activeLevel > 8 &&
+                                !previousGroups.has(champion.group);
+                              const isEvolved =
+                                board.khazixEvolutionTraits.length > 0 &&
+                                champion.id.includes('18-khazix');
+                              const doubleTrait = Object.entries(
+                                champion.traitWeights,
+                              ).find(([, value]) => value > 1)?.[0];
+                              return (
+                                <article
+                                  key={champion.id}
+                                  className="champion-card"
+                                >
                                   <div
-                                    key={`${tool}-${crafted.traitId}`}
-                                    className="board-craft-item"
+                                    className="champion-image"
+                                    style={
+                                      {
+                                        '--cost': costColors[champion.cost],
+                                      } as React.CSSProperties
+                                    }
                                   >
                                     <StaticImage
                                       unoptimized
-                                      src={staticAsset(
-                                        craftToolMeta[tool].icon,
-                                      )}
-                                      alt=""
-                                      width={22}
-                                      height={22}
+                                      src={staticAsset(champion.image)}
+                                      alt={champion.name}
+                                      width={128}
+                                      height={128}
                                     />
-                                    <span>+</span>
-                                    <StaticImage
-                                      unoptimized
-                                      src={staticAsset(componentIcon)}
-                                      alt={component}
-                                      title={component}
-                                      width={22}
-                                      height={22}
-                                    />
-                                    <span>→</span>
-                                    <StaticImage
-                                      unoptimized
-                                      src={staticAsset(emblem.icon)}
-                                      alt=""
-                                      width={22}
-                                      height={22}
-                                    />
-                                    <b>
-                                      {emblem.shortName}转
-                                      {crafted.count > 1
-                                        ? ` ×${crafted.count}`
-                                        : ''}
-                                    </b>
+                                    <span className="cost-badge">
+                                      {champion.cost}
+                                    </span>
+                                    {isNew && (
+                                      <span className="new-badge">
+                                        本级新增
+                                      </span>
+                                    )}
+                                    {items.length > 0 && (
+                                      <div className="item-stack">
+                                        {items.map(
+                                          (emblem) =>
+                                            emblem && (
+                                              <StaticImage
+                                                unoptimized
+                                                key={emblem.id}
+                                                src={staticAsset(emblem.icon)}
+                                                alt={emblem.name}
+                                                title={emblem.name}
+                                                width={20}
+                                                height={20}
+                                              />
+                                            ),
+                                        )}
+                                      </div>
+                                    )}
                                   </div>
-                                );
-                              })}
-                            </div>
+                                  <h3 title={champion.name}>{champion.name}</h3>
+                                  {(isEvolved || doubleTrait) && (
+                                    <p className="special-note">
+                                      {isEvolved
+                                        ? '四项进化'
+                                        : `${doubleTrait} ×2`}
+                                    </p>
+                                  )}
+                                </article>
+                              );
+                            })}
                           </div>
-                        )}
 
-                        <div
-                          className="board-grid"
-                          style={
-                            {
-                              '--board-size': activeLevel,
-                            } as React.CSSProperties
-                          }
-                        >
-                          {board.champions.map((champion) => {
-                            const items = assignedEmblems(board, champion.id);
-                            const isNew =
-                              activeLevel > 8 &&
-                              !previousGroups.has(champion.group);
-                            const isEvolved =
-                              board.khazixEvolutionTraits.length > 0 &&
-                              champion.id.includes('18-khazix');
-                            const doubleTrait = Object.entries(
-                              champion.traitWeights,
-                            ).find(([, value]) => value > 1)?.[0];
-                            return (
-                              <article
-                                key={champion.id}
-                                className="champion-card"
-                              >
+                          {board.khazixEvolutionTraits.length > 0 && (
+                            <div className="khazix-evolution-callout">
+                              <span>卡兹克需进化</span>
+                              <div>
+                                {board.khazixEvolutionTraits.map((trait) => (
+                                  <b key={trait}>{trait}</b>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          <div className="my-4 h-px bg-white/7" />
+                          <div className="flex flex-wrap gap-2">
+                            {board.activeTraits.map((trait) => {
+                              const fromEmblem =
+                                (emblemCounts[trait.id] ?? 0) > 0 ||
+                                board.craftedEmblems.some(
+                                  (crafted) => crafted.traitId === trait.id,
+                                );
+                              return (
                                 <div
-                                  className="champion-image"
-                                  style={
-                                    {
-                                      '--cost': costColors[champion.cost],
-                                    } as React.CSSProperties
-                                  }
+                                  key={trait.id}
+                                  className="trait-pill"
+                                  data-emblem={fromEmblem}
                                 >
                                   <StaticImage
                                     unoptimized
-                                    src={staticAsset(champion.image)}
-                                    alt={champion.name}
-                                    width={128}
-                                    height={128}
+                                    src={staticAsset(trait.icon)}
+                                    alt=""
+                                    width={19}
+                                    height={19}
                                   />
-                                  <span className="cost-badge">
-                                    {champion.cost}
-                                  </span>
-                                  {isNew && (
-                                    <span className="new-badge">本级新增</span>
-                                  )}
-                                  {items.length > 0 && (
-                                    <div className="item-stack">
-                                      {items.map(
-                                        (emblem) =>
-                                          emblem && (
-                                            <StaticImage
-                                              unoptimized
-                                              key={emblem.id}
-                                              src={staticAsset(emblem.icon)}
-                                              alt={emblem.name}
-                                              title={emblem.name}
-                                              width={20}
-                                              height={20}
-                                            />
-                                          ),
-                                      )}
-                                    </div>
-                                  )}
+                                  <span>{trait.name}</span>
+                                  <b>{trait.count}</b>
                                 </div>
-                                <h3 title={champion.name}>{champion.name}</h3>
-                                {(isEvolved || doubleTrait) && (
-                                  <p className="special-note">
-                                    {isEvolved
-                                      ? '四项进化'
-                                      : `${doubleTrait} ×2`}
-                                  </p>
-                                )}
-                              </article>
-                            );
-                          })}
-                        </div>
-
-                        {board.khazixEvolutionTraits.length > 0 && (
-                          <div className="khazix-evolution-callout">
-                            <span>卡兹克需进化</span>
-                            <div>
-                              {board.khazixEvolutionTraits.map((trait) => (
-                                <b key={trait}>{trait}</b>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="my-4 h-px bg-white/7" />
-                        <div className="flex flex-wrap gap-2">
-                          {board.activeTraits.map((trait) => {
-                            const fromEmblem =
-                              (emblemCounts[trait.id] ?? 0) > 0 ||
-                              board.craftedEmblems.some(
-                                (crafted) => crafted.traitId === trait.id,
                               );
-                            return (
-                              <div
-                                key={trait.id}
-                                className="trait-pill"
-                                data-emblem={fromEmblem}
-                              >
-                                <StaticImage
-                                  unoptimized
-                                  src={staticAsset(trait.icon)}
-                                  alt=""
-                                  width={19}
-                                  height={19}
-                                />
-                                <span>{trait.name}</span>
-                                <b>{trait.count}</b>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </article>
-                    ))}
+                            })}
+                          </div>
+                        </article>
+                      );
+                    })}
                   </div>
 
                   <div className="mt-5 flex items-start gap-2 rounded-xl border border-white/6 bg-black/10 px-3 py-2.5 text-[11px] leading-5 text-[#667a71]">
