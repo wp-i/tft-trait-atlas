@@ -7,16 +7,14 @@ import {
   useState,
   type ImgHTMLAttributes,
 } from 'react';
-import { Info, Leaf, LoaderCircle, RotateCcw } from 'lucide-react';
+import { Info, Leaf, LoaderCircle, Minus, Plus, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Switch } from '@/components/ui/switch';
 import rawData from '@/app/data/tft-set18.json';
 import {
   optimizeBoards,
-  recommendCraftableEmblems,
   type BoardResult,
-  type EmblemRecommendation,
+  type CraftBudget,
   type TftData,
 } from '@/app/lib/optimizer';
 
@@ -47,16 +45,21 @@ const emblemGroups = [
     data.emblems.filter((emblem) => professionEmblemIds.has(emblem.id)),
   ),
 ];
-type CraftTool = 'none' | 'spatula' | 'pan';
+type CraftTool = 'spatula' | 'pan';
+const craftTools: CraftTool[] = ['spatula', 'pan'];
 const craftToolMeta = {
-  none: { name: '无', icon: '' },
-  spatula: { name: '金铲铲', icon: '/tft/items/spatula.png' },
-  pan: { name: '金锅锅', icon: '/tft/items/frying-pan.png' },
-} satisfies Record<CraftTool, { name: string; icon: string }>;
-const craftRecipes: Record<
-  Exclude<CraftTool, 'none'>,
-  Record<string, string>
-> = {
+  spatula: {
+    name: '金铲铲',
+    icon: '/tft/items/spatula.png',
+    scope: '种族纹章',
+  },
+  pan: {
+    name: '金锅锅',
+    icon: '/tft/items/frying-pan.png',
+    scope: '职业纹章',
+  },
+} satisfies Record<CraftTool, { name: string; icon: string; scope: string }>;
+const craftRecipes: Record<CraftTool, Record<string, string>> = {
   spatula: {
     '18-blackthorn': '巨人腰带',
     '18-fae': '暴风大剑',
@@ -78,7 +81,7 @@ const craftRecipes: Record<
     '18-spellweaver': '无用大棒',
   },
 };
-const craftableEmblems = {
+const craftableEmblems: Record<CraftTool, TftData['emblems']> = {
   spatula: data.emblems.filter((emblem) => emblem.id in craftRecipes.spatula),
   pan: data.emblems.filter((emblem) => emblem.id in craftRecipes.pan),
 };
@@ -107,21 +110,15 @@ export default function Home() {
   const [emblemCounts, setEmblemCounts] =
     useState<Record<string, number>>(defaultCounts);
   const [activeLevel, setActiveLevel] = useState<(typeof levels)[number]>(8);
-  const [craftTool, setCraftTool] = useState<CraftTool>('none');
+  const [craftToolCounts, setCraftToolCounts] = useState<
+    Record<CraftTool, number>
+  >({ spatula: 0, pan: 0 });
   const [evolvedKhazix, setEvolvedKhazix] = useState(false);
   const [results, setResults] = useState<
     Partial<Record<number, BoardResult[]>>
   >({});
-  const [craftResults, setCraftResults] = useState<
-    Partial<Record<number, EmblemRecommendation[]>>
-  >({});
-  const [selectedCrafts, setSelectedCrafts] = useState<
-    Partial<Record<number, string>>
-  >({});
   const [loading, setLoading] = useState(true);
-  const [craftLoading, setCraftLoading] = useState(false);
   const [error, setError] = useState('');
-  const [craftError, setCraftError] = useState('');
 
   const selectedEmblems = useMemo(
     () => data.emblems.filter((emblem) => (emblemCounts[emblem.id] ?? 0) > 0),
@@ -131,36 +128,26 @@ export default function Home() {
     (sum, count) => sum + count,
     0,
   );
-  const activeCraftTool = craftTool === 'none' ? undefined : craftTool;
-  const levelRecommendations = craftResults[activeLevel] ?? [];
-  const activeRecommendation =
-    levelRecommendations.find(
-      (recommendation) =>
-        recommendation.emblem.id === selectedCrafts[activeLevel],
-    ) ?? levelRecommendations[0];
-  const variants = activeCraftTool
-    ? (activeRecommendation?.boards ?? [])
-    : (results[activeLevel] ?? []);
-  const previousResult = activeCraftTool
-    ? craftResults[activeLevel - 1]?.[0]?.boards[0]
-    : results[activeLevel - 1]?.[0];
+  const totalCraftTools = craftTools.reduce(
+    (sum, tool) => sum + craftToolCounts[tool],
+    0,
+  );
+  const craftBudgets = useMemo<CraftBudget[]>(
+    () =>
+      craftTools
+        .filter((tool) => craftToolCounts[tool] > 0)
+        .map((tool) => ({
+          toolId: tool,
+          count: craftToolCounts[tool],
+          emblemIds: craftableEmblems[tool].map((emblem) => emblem.id),
+        })),
+    [craftToolCounts],
+  );
+  const variants = results[activeLevel] ?? [];
+  const previousResult = results[activeLevel - 1]?.[0];
   const previousGroups = new Set(
     previousResult?.champions.map((champion) => champion.group),
   );
-  const effectiveEmblemCounts = useMemo(() => {
-    if (!activeCraftTool || !activeRecommendation) return emblemCounts;
-    return {
-      ...emblemCounts,
-      [activeRecommendation.emblem.id]:
-        (emblemCounts[activeRecommendation.emblem.id] ?? 0) + 1,
-    };
-  }, [activeCraftTool, activeRecommendation, emblemCounts]);
-  const activeRecipeComponent =
-    activeCraftTool && activeRecommendation
-      ? craftRecipes[activeCraftTool][activeRecommendation.emblem.id]
-      : '';
-  const displayError = error || (activeCraftTool ? craftError : '');
-  const isCalculating = loading || (Boolean(activeCraftTool) && craftLoading);
 
   useEffect(() => {
     let cancelled = false;
@@ -178,6 +165,7 @@ export default function Home() {
             emblemCounts,
             evolvedKhazix,
             2,
+            craftBudgets,
           );
           if (cancelled) return;
           setResults((current) => ({ ...current, [level]: boards }));
@@ -195,57 +183,13 @@ export default function Home() {
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [emblemCounts, evolvedKhazix]);
+  }, [craftBudgets, emblemCounts, evolvedKhazix]);
 
-  useEffect(() => {
-    if (!activeCraftTool) return;
-
-    let cancelled = false;
-    const timer = window.setTimeout(async () => {
-      if (cancelled) return;
-      setCraftLoading(true);
-      setCraftError('');
-      setCraftResults({});
-      setSelectedCrafts({});
-      try {
-        for (const level of levels) {
-          const recommendations = await recommendCraftableEmblems(
-            data,
-            level,
-            emblemCounts,
-            craftableEmblems[activeCraftTool],
-            evolvedKhazix,
-            2,
-          );
-          if (cancelled) return;
-          setCraftResults((current) => ({
-            ...current,
-            [level]: recommendations,
-          }));
-        }
-      } catch (reason) {
-        if (!cancelled) {
-          setCraftError(
-            reason instanceof Error ? reason.message : '纹章合成推荐计算失败',
-          );
-        }
-      } finally {
-        if (!cancelled) setCraftLoading(false);
-      }
-    }, 180);
-
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timer);
-    };
-  }, [activeCraftTool, emblemCounts, evolvedKhazix]);
-
-  const changeCraftTool = (nextTool: CraftTool) => {
-    setCraftTool(nextTool);
-    setCraftResults({});
-    setSelectedCrafts({});
-    setCraftError('');
-    setCraftLoading(nextTool !== 'none');
+  const changeCraftToolCount = (tool: CraftTool, delta: number) => {
+    setCraftToolCounts((current) => ({
+      ...current,
+      [tool]: Math.max(0, Math.min(9, current[tool] + delta)),
+    }));
   };
 
   const cycleEmblem = (id: string) => {
@@ -292,15 +236,12 @@ export default function Home() {
             aria-labelledby="emblem-heading"
           >
             <div className="mb-4 flex items-center justify-between">
-              <div>
-                <p className="eyebrow">STEP 01</p>
-                <h2
-                  id="emblem-heading"
-                  className="mt-1 text-lg font-semibold text-[#e9e4d8]"
-                >
-                  录入纹章
-                </h2>
-              </div>
+              <h2
+                id="emblem-heading"
+                className="text-lg font-semibold text-[#e9e4d8]"
+              >
+                录入纹章
+              </h2>
               <div className="flex items-center gap-2">
                 <span className="rounded-lg border border-white/7 bg-white/[0.025] px-2.5 py-1.5 text-xs text-[#a9b6af]">
                   已选 <b className="text-[#e6d28d]">{totalEmblems}</b> 枚
@@ -309,8 +250,11 @@ export default function Home() {
                   variant="ghost"
                   size="sm"
                   className="text-[#7f9188] hover:bg-white/5 hover:text-[#d8e0dc]"
-                  onClick={() => setEmblemCounts({})}
-                  disabled={totalEmblems === 0}
+                  onClick={() => {
+                    setEmblemCounts({});
+                    setCraftToolCounts({ spatula: 0, pan: 0 });
+                  }}
+                  disabled={totalEmblems === 0 && totalCraftTools === 0}
                 >
                   <RotateCcw /> 清空
                 </Button>
@@ -326,28 +270,17 @@ export default function Home() {
                 <span className="text-xs font-medium text-[#aebbb4]">
                   额外合成件
                 </span>
-                <span className="text-[11px] text-[#687b72]">
-                  选择一种即可计算推荐
-                </span>
               </div>
-              <RadioGroup
-                value={craftTool}
-                onValueChange={changeCraftTool}
-                className="craft-tool-selector"
-                aria-label="选择额外合成工具"
-              >
-                {(
-                  Object.entries(craftToolMeta) as Array<
-                    [CraftTool, (typeof craftToolMeta)[CraftTool]]
-                  >
-                ).map(([value, meta]) => (
-                  <label
-                    key={value}
-                    className="craft-tool-choice"
-                    data-active={craftTool === value}
-                  >
-                    <RadioGroupItem value={value} className="sr-only" />
-                    {meta.icon ? (
+              <div className="craft-tool-selector">
+                {craftTools.map((tool) => {
+                  const meta = craftToolMeta[tool];
+                  const count = craftToolCounts[tool];
+                  return (
+                    <div
+                      key={tool}
+                      className="craft-tool-choice"
+                      data-active={count > 0}
+                    >
                       <StaticImage
                         unoptimized
                         src={staticAsset(meta.icon)}
@@ -355,22 +288,36 @@ export default function Home() {
                         width={30}
                         height={30}
                       />
-                    ) : (
-                      <span className="craft-tool-none">—</span>
-                    )}
-                    <span>
-                      <strong>{meta.name}</strong>
-                      <small>
-                        {value === 'spatula'
-                          ? '种族纹章'
-                          : value === 'pan'
-                            ? '职业纹章'
-                            : '不计算合成'}
-                      </small>
-                    </span>
-                  </label>
-                ))}
-              </RadioGroup>
+                      <span>
+                        <strong>{meta.name}</strong>
+                        <small>{meta.scope}</small>
+                      </span>
+                      <div
+                        className="craft-tool-stepper"
+                        aria-label={`${meta.name}数量`}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => changeCraftToolCount(tool, -1)}
+                          disabled={count === 0}
+                          aria-label={`减少${meta.name}`}
+                        >
+                          <Minus />
+                        </button>
+                        <b>{count}</b>
+                        <button
+                          type="button"
+                          onClick={() => changeCraftToolCount(tool, 1)}
+                          disabled={count === 9}
+                          aria-label={`增加${meta.name}`}
+                        >
+                          <Plus />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
             <div>
               {emblemGroups.map((group, groupIndex) => (
@@ -475,28 +422,23 @@ export default function Home() {
           >
             <div className="border-b border-white/7 p-4 sm:p-5">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <p className="eyebrow">STEP 02</p>
-                  <h2
-                    id="result-heading"
-                    className="mt-1 text-lg font-semibold text-[#e9e4d8]"
-                  >
-                    人口上限清单
-                  </h2>
-                </div>
-                {isCalculating && (
+                <h2
+                  id="result-heading"
+                  className="text-lg font-semibold text-[#e9e4d8]"
+                >
+                  人口上限清单
+                </h2>
+                {loading && (
                   <span className="flex items-center gap-2 text-xs text-[#80948a]">
                     <LoaderCircle className="size-3.5 animate-spin" />
-                    {activeCraftTool ? '正在比较合成' : '正在精确求解'}
+                    {totalCraftTools > 0 ? '正在计算合成' : '正在精确求解'}
                   </span>
                 )}
               </div>
 
               <div className="grid grid-cols-4 gap-2">
                 {levels.map((level) => {
-                  const score = activeCraftTool
-                    ? craftResults[level]?.[0]?.score
-                    : results[level]?.[0]?.score;
+                  const score = results[level]?.[0]?.score;
                   return (
                     <button
                       key={level}
@@ -515,83 +457,7 @@ export default function Home() {
             </div>
 
             <div className="relative p-4 sm:p-5">
-              {activeCraftTool && activeRecommendation && (
-                <div className="craft-recommendation mb-4">
-                  <div className="flex min-w-0 items-center gap-3">
-                    <div className="craft-recommendation-icon">
-                      <StaticImage
-                        unoptimized
-                        src={staticAsset(craftToolMeta[activeCraftTool].icon)}
-                        alt=""
-                        width={26}
-                        height={26}
-                      />
-                    </div>
-                    <StaticImage
-                      unoptimized
-                      src={staticAsset(activeRecommendation.emblem.icon)}
-                      alt=""
-                      width={38}
-                      height={38}
-                      className="size-[38px] rounded-lg"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[10px] font-bold tracking-[0.14em] text-[#8e8155]">
-                        {craftToolMeta[activeCraftTool].name}最佳合成
-                      </p>
-                      <h3 className="mt-0.5 truncate text-sm font-semibold text-[#e8d99e]">
-                        {craftToolMeta[activeCraftTool].name} +{' '}
-                        {activeRecipeComponent} →{' '}
-                        {activeRecommendation.emblem.name}
-                      </h3>
-                      <p className="mt-0.5 text-[11px] text-[#7c897f]">
-                        {activeLevel} 人口可达 {activeRecommendation.score}{' '}
-                        个羁绊
-                        {activeRecommendation.score >
-                        (results[activeLevel]?.[0]?.score ??
-                          activeRecommendation.score)
-                          ? `，较不合成 +${activeRecommendation.score - (results[activeLevel]?.[0]?.score ?? activeRecommendation.score)}`
-                          : '，与不合成的上限同分'}
-                      </p>
-                    </div>
-                  </div>
-                  {levelRecommendations.length > 1 && (
-                    <div className="mt-3 flex flex-wrap items-center gap-1.5 border-t border-white/7 pt-3">
-                      <span className="mr-1 text-[11px] text-[#718078]">
-                        同分推荐
-                      </span>
-                      {levelRecommendations.map((recommendation) => (
-                        <button
-                          key={recommendation.emblem.id}
-                          type="button"
-                          className="craft-option"
-                          data-active={
-                            recommendation.emblem.id ===
-                            activeRecommendation.emblem.id
-                          }
-                          onClick={() =>
-                            setSelectedCrafts((current) => ({
-                              ...current,
-                              [activeLevel]: recommendation.emblem.id,
-                            }))
-                          }
-                        >
-                          <StaticImage
-                            unoptimized
-                            src={staticAsset(recommendation.emblem.icon)}
-                            alt=""
-                            width={20}
-                            height={20}
-                          />
-                          {recommendation.emblem.shortName}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {displayError ? (
+              {error ? (
                 <div className="empty-result">
                   <Info className="size-5" />
                   <p>计算器暂时没有响应，请刷新后重试。</p>
@@ -599,15 +465,14 @@ export default function Home() {
               ) : variants.length === 0 ? (
                 <div className="empty-result min-h-72">
                   <LoaderCircle className="size-5 animate-spin" />
-                  <p>正在生成 {activeLevel} 人口阵容…</p>
+                  <p>
+                    {totalCraftTools > 0
+                      ? '正在生成合成方案…'
+                      : `正在生成 ${activeLevel} 人口阵容…`}
+                  </p>
                 </div>
               ) : (
                 <>
-                  {variants.length > 1 && (
-                    <div className="mb-3 flex items-center justify-end text-[11px] text-[#70837a]">
-                      上下滚动查看更多同分方案
-                    </div>
-                  )}
                   <div
                     className="variant-scroll"
                     aria-label={`${activeLevel} 人口同分阵容方案`}
@@ -625,6 +490,55 @@ export default function Home() {
                             总费用 {board.totalCost} 金币
                           </div>
                         </div>
+
+                        {board.craftedEmblems.length > 0 && (
+                          <div className="board-craft-summary">
+                            <span>推荐合成</span>
+                            <div>
+                              {board.craftedEmblems.map((crafted) => {
+                                const tool = crafted.toolId as CraftTool;
+                                const emblem = data.emblems.find(
+                                  (entry) => entry.id === crafted.traitId,
+                                );
+                                const component =
+                                  craftRecipes[tool]?.[crafted.traitId];
+                                if (!emblem || !component) return null;
+                                return (
+                                  <div
+                                    key={`${tool}-${crafted.traitId}`}
+                                    className="board-craft-item"
+                                  >
+                                    <StaticImage
+                                      unoptimized
+                                      src={staticAsset(
+                                        craftToolMeta[tool].icon,
+                                      )}
+                                      alt=""
+                                      width={22}
+                                      height={22}
+                                    />
+                                    <span>+</span>
+                                    <strong>{component}</strong>
+                                    <span>→</span>
+                                    <StaticImage
+                                      unoptimized
+                                      src={staticAsset(emblem.icon)}
+                                      alt=""
+                                      width={22}
+                                      height={22}
+                                    />
+                                    <b>
+                                      {emblem.shortName}
+                                      {crafted.count > 1
+                                        ? ` ×${crafted.count}`
+                                        : ''}
+                                    </b>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
 
                         <div
                           className="board-grid"
@@ -716,18 +630,16 @@ export default function Home() {
 
                         <div className="my-5 h-px bg-white/7" />
 
-                        <div className="mb-3 flex items-center justify-between">
-                          <h3 className="text-sm font-medium text-[#c5cec9]">
-                            已激活非唯一羁绊
-                          </h3>
-                          <span className="text-[11px] text-[#687b72]">
-                            数字为含纹章后的层数
-                          </span>
-                        </div>
+                        <h3 className="mb-3 text-sm font-medium text-[#c5cec9]">
+                          已激活非唯一羁绊
+                        </h3>
                         <div className="flex flex-wrap gap-2">
                           {board.activeTraits.map((trait) => {
                             const fromEmblem =
-                              (effectiveEmblemCounts[trait.id] ?? 0) > 0;
+                              (emblemCounts[trait.id] ?? 0) > 0 ||
+                              board.craftedEmblems.some(
+                                (crafted) => crafted.traitId === trait.id,
+                              );
                             return (
                               <div
                                 key={trait.id}

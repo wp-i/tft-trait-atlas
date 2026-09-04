@@ -183,13 +183,6 @@ body {
       0 0 16px rgba(115, 184, 140, 0.4);
   }
 
-  .eyebrow {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    color: #789086;
-  }
-
   .craft-tool-panel {
     border: 1px solid rgba(255, 255, 255, 0.075);
     border-radius: 12px;
@@ -199,7 +192,7 @@ body {
 
   .craft-tool-selector {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 6px;
   }
 
@@ -207,7 +200,7 @@ body {
     display: flex;
     min-width: 0;
     min-height: 48px;
-    cursor: pointer;
+    cursor: default;
     align-items: center;
     gap: 7px;
     border: 1px solid rgba(255, 255, 255, 0.075);
@@ -223,11 +216,6 @@ body {
     background: rgba(213, 184, 98, 0.035);
   }
 
-  .craft-tool-choice:has([data-slot='radio-group-item']:focus-visible) {
-    border-color: rgba(213, 184, 98, 0.62);
-    box-shadow: 0 0 0 2px rgba(213, 184, 98, 0.1);
-  }
-
   .craft-tool-choice[data-active='true'] {
     border-color: rgba(213, 184, 98, 0.4);
     color: #e4d8ae;
@@ -235,8 +223,7 @@ body {
     box-shadow: inset 0 0 18px rgba(213, 184, 98, 0.025);
   }
 
-  .craft-tool-choice > img,
-  .craft-tool-none {
+  .craft-tool-choice > img {
     width: 30px;
     height: 30px;
     flex: none;
@@ -249,14 +236,7 @@ body {
     object-fit: cover;
   }
 
-  .craft-tool-none {
-    display: grid;
-    place-items: center;
-    color: #61746a;
-    font-weight: 700;
-  }
-
-  .craft-tool-choice > span:last-child {
+  .craft-tool-choice > span {
     display: flex;
     min-width: 0;
     flex-direction: column;
@@ -279,6 +259,50 @@ body {
     line-height: 1.2;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .craft-tool-stepper {
+    display: grid;
+    grid-template-columns: 26px 24px 26px;
+    flex: none;
+    align-items: center;
+    margin-left: auto;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.18);
+  }
+
+  .craft-tool-stepper button {
+    display: grid;
+    height: 28px;
+    cursor: pointer;
+    place-items: center;
+    color: #9eafa6;
+    transition: 140ms ease;
+  }
+
+  .craft-tool-stepper button:hover:not(:disabled),
+  .craft-tool-stepper button:focus-visible {
+    color: #f0dda0;
+    background: rgba(213, 184, 98, 0.11);
+  }
+
+  .craft-tool-stepper button:disabled {
+    cursor: default;
+    color: #46554e;
+  }
+
+  .craft-tool-stepper svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .craft-tool-stepper b {
+    text-align: center;
+    color: #ead995;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
   }
 
   .emblem-button {
@@ -432,66 +456,61 @@ body {
     font-size: 11px;
   }
 
-  .craft-recommendation {
-    border: 1px solid rgba(213, 184, 98, 0.26);
-    border-radius: 14px;
-    padding: 12px;
-    background:
-      linear-gradient(
-        120deg,
-        rgba(213, 184, 98, 0.09),
-        rgba(50, 99, 76, 0.055)
-      ),
-      rgba(3, 10, 8, 0.16);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  .board-craft-summary {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(213, 184, 98, 0.2);
+    border-radius: 11px;
+    padding: 9px 10px;
+    color: #718078;
+    font-size: 10px;
+    background: rgba(213, 184, 98, 0.045);
   }
 
-  .craft-recommendation-icon {
-    display: grid;
-    width: 34px;
-    height: 34px;
+  .board-craft-summary > span {
     flex: none;
-    place-items: center;
-    border: 1px solid rgba(213, 184, 98, 0.28);
-    border-radius: 10px;
-    color: #e1c96f;
-    background: rgba(213, 184, 98, 0.075);
+    padding-top: 6px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
   }
 
-  .craft-recommendation-icon img {
-    width: 26px;
-    height: 26px;
-    border-radius: 7px;
+  .board-craft-summary > div {
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .board-craft-item {
+    display: inline-flex;
+    min-height: 28px;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 8px;
+    padding: 2px 7px 2px 3px;
+    color: #788a80;
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  .board-craft-item img {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
     object-fit: cover;
   }
 
-  .craft-option {
-    display: inline-flex;
-    height: 30px;
-    align-items: center;
-    gap: 5px;
-    border: 1px solid rgba(255, 255, 255, 0.075);
-    border-radius: 8px;
-    padding: 0 8px 0 5px;
-    color: #93a198;
-    font-size: 11px;
-    background: rgba(255, 255, 255, 0.025);
-    transition: 140ms ease;
+  .board-craft-item strong {
+    color: #a9b6af;
+    font-weight: 500;
   }
 
-  .craft-option:hover {
-    border-color: rgba(213, 184, 98, 0.28);
-    color: #d7cda8;
-  }
-  .craft-option[data-active='true'] {
-    border-color: rgba(213, 184, 98, 0.42);
-    color: #eddda1;
-    background: rgba(213, 184, 98, 0.09);
-  }
-  .craft-option img {
-    width: 20px;
-    height: 20px;
-    border-radius: 5px;
+  .board-craft-item b {
+    color: #e4d59f;
+    font-size: 11px;
+    font-weight: 600;
   }
 
   .variant-scroll {
@@ -704,6 +723,10 @@ body {
 }
 
 @media (max-width: 640px) {
+  .craft-tool-selector {
+    grid-template-columns: 1fr;
+  }
+
   .level-button {
     display: flex;
     flex-direction: column;

@@ -44,6 +44,20 @@ export type EmblemAssignment = {
   traitId: string;
   championId: string;
   copy: number;
+  source: 'owned' | 'crafted';
+  toolId?: string;
+};
+
+export type CraftBudget = {
+  toolId: string;
+  count: number;
+  emblemIds: string[];
+};
+
+export type CraftedEmblem = {
+  traitId: string;
+  toolId: string;
+  count: number;
 };
 
 export type BoardResult = {
@@ -51,15 +65,10 @@ export type BoardResult = {
   champions: Champion[];
   activeTraits: BoardTrait[];
   emblemAssignments: EmblemAssignment[];
+  craftedEmblems: CraftedEmblem[];
   khazixEvolutionTraits: string[];
   score: number;
   totalCost: number;
-};
-
-export type EmblemRecommendation = {
-  emblem: Emblem;
-  boards: BoardResult[];
-  score: number;
 };
 
 const glpkPromise = GLPK();
@@ -84,6 +93,7 @@ async function solveBoard(
   emblemCounts: Record<string, number>,
   evolvedKhazix: boolean,
   exclusions: string[][],
+  craftBudgets: CraftBudget[],
 ): Promise<BoardResult> {
   const glpk = await glpkPromise;
   const championPool = data.champions.filter(
@@ -103,8 +113,12 @@ async function solveBoard(
     name: string;
     traitId: string;
     championId: string;
+    source: 'owned' | 'crafted';
+    toolId?: string;
   }> = [];
   const assignmentsByChampion = new Map<string, string[]>();
+  const assignmentsByTraitChampion = new Map<string, string[]>();
+  const craftedAssignmentsByTool = new Map<string, string[]>();
 
   const subjectTo: LP['subjectTo'] = [
     {
@@ -132,11 +146,75 @@ async function solveBoard(
     coef: -champion.cost * 0.01,
   }));
 
+  const addAssignmentVariable = (
+    name: string,
+    traitId: string,
+    championId: string,
+    source: 'owned' | 'crafted',
+    toolId?: string,
+  ) => {
+    binaries.push(name);
+    assignmentVariables.push({
+      name,
+      traitId,
+      championId,
+      source,
+      toolId,
+    });
+    assignmentsByChampion.set(championId, [
+      ...(assignmentsByChampion.get(championId) ?? []),
+      name,
+    ]);
+    const traitChampionKey = `${traitId}:${championId}`;
+    assignmentsByTraitChampion.set(traitChampionKey, [
+      ...(assignmentsByTraitChampion.get(traitChampionKey) ?? []),
+      name,
+    ]);
+    if (source === 'crafted' && toolId) {
+      craftedAssignmentsByTool.set(toolId, [
+        ...(craftedAssignmentsByTool.get(toolId) ?? []),
+        name,
+      ]);
+    }
+    subjectTo.push({
+      name: `link_${source}_${toolId ?? 'owned'}_${traitId}_${championId}`,
+      vars: [
+        { name, coef: 1 },
+        { name: championVariables.get(championId)!, coef: -1 },
+      ],
+      bnds: { type: glpk.GLP_UP, lb: 0, ub: 0 },
+    });
+  };
+
   for (const trait of scoringTraits) {
     const traitVariable = variableName('trait', trait.id);
     const firstBreakpoint = Math.min(...trait.breakpoints);
     binaries.push(traitVariable);
     objectiveVars.push({ name: traitVariable, coef: 100 });
+
+    const eligibleChampions = championPool.filter(
+      (champion) =>
+        !(championWeights(champion, data, evolvedKhazix)[trait.name] > 0),
+    );
+    const craftAssignmentVars: string[] = [];
+
+    for (const budget of craftBudgets) {
+      if (budget.count <= 0 || !budget.emblemIds.includes(trait.id)) continue;
+      for (const champion of eligibleChampions) {
+        const name = variableName(
+          'craft',
+          `${budget.toolId}_${trait.id}_${champion.id}`,
+        );
+        addAssignmentVariable(
+          name,
+          trait.id,
+          champion.id,
+          'crafted',
+          budget.toolId,
+        );
+        craftAssignmentVars.push(name);
+      }
+    }
 
     subjectTo.push({
       name: `active_${trait.id}`,
@@ -150,6 +228,7 @@ async function solveBoard(
             ),
           }))
           .filter((entry) => entry.coef !== 0),
+        ...craftAssignmentVars.map((name) => ({ name, coef: -1 })),
       ],
       bnds: {
         type: glpk.GLP_UP,
@@ -160,30 +239,9 @@ async function solveBoard(
 
     const copies = emblemCounts[trait.id] ?? 0;
     if (copies > 0) {
-      const eligibleChampions = championPool.filter(
-        (champion) =>
-          !(championWeights(champion, data, evolvedKhazix)[trait.name] > 0),
-      );
       const assignmentVars = eligibleChampions.map((champion) => {
-        const name = variableName('emblem', `${trait.id}_${champion.id}`);
-        binaries.push(name);
-        assignmentVariables.push({
-          name,
-          traitId: trait.id,
-          championId: champion.id,
-        });
-        assignmentsByChampion.set(champion.id, [
-          ...(assignmentsByChampion.get(champion.id) ?? []),
-          name,
-        ]);
-        subjectTo.push({
-          name: `link_${trait.id}_${champion.id}`,
-          vars: [
-            { name, coef: 1 },
-            { name: championVariables.get(champion.id)!, coef: -1 },
-          ],
-          bnds: { type: glpk.GLP_UP, lb: 0, ub: 0 },
-        });
+        const name = variableName('emblem', `owned_${trait.id}_${champion.id}`);
+        addAssignmentVariable(name, trait.id, champion.id, 'owned');
         return { name, coef: 1 };
       });
 
@@ -193,6 +251,25 @@ async function solveBoard(
         bnds: { type: glpk.GLP_FX, lb: copies, ub: copies },
       });
     }
+  }
+
+  for (const budget of craftBudgets) {
+    if (budget.count <= 0) continue;
+    const names = craftedAssignmentsByTool.get(budget.toolId) ?? [];
+    subjectTo.push({
+      name: `craft_budget_${budget.toolId}`,
+      vars: names.map((name) => ({ name, coef: 1 })),
+      bnds: { type: glpk.GLP_FX, lb: budget.count, ub: budget.count },
+    });
+  }
+
+  for (const [key, names] of assignmentsByTraitChampion) {
+    if (names.length < 2) continue;
+    subjectTo.push({
+      name: `duplicate_${variableName('pair', key)}`,
+      vars: names.map((name) => ({ name, coef: 1 })),
+      bnds: { type: glpk.GLP_UP, lb: 0, ub: 1 },
+    });
   }
 
   for (const [championId, names] of assignmentsByChampion) {
@@ -239,6 +316,7 @@ async function solveBoard(
       champions: [],
       activeTraits: [],
       emblemAssignments: [],
+      craftedEmblems: [],
       khazixEvolutionTraits: [],
       score: 0,
       totalCost: 0,
@@ -261,8 +339,25 @@ async function solveBoard(
         traitId: assignment.traitId,
         championId: assignment.championId,
         copy,
+        source: assignment.source,
+        toolId: assignment.toolId,
       };
     });
+  const craftedCounts = new Map<string, CraftedEmblem>();
+  for (const assignment of emblemAssignments) {
+    if (assignment.source !== 'crafted' || !assignment.toolId) continue;
+    const key = `${assignment.toolId}:${assignment.traitId}`;
+    const current = craftedCounts.get(key);
+    craftedCounts.set(key, {
+      traitId: assignment.traitId,
+      toolId: assignment.toolId,
+      count: (current?.count ?? 0) + 1,
+    });
+  }
+  const craftedEmblems = [...craftedCounts.values()].sort(
+    (a, b) =>
+      a.toolId.localeCompare(b.toolId) || a.traitId.localeCompare(b.traitId),
+  );
   const counts = new Map<string, number>();
 
   for (const champion of champions) {
@@ -277,6 +372,12 @@ async function solveBoard(
     const trait = data.traits.find((entry) => entry.id === traitId);
     if (trait && copies > 0)
       counts.set(trait.name, (counts.get(trait.name) ?? 0) + copies);
+  }
+
+  for (const assignment of emblemAssignments) {
+    if (assignment.source !== 'crafted') continue;
+    const trait = data.traits.find((entry) => entry.id === assignment.traitId);
+    if (trait) counts.set(trait.name, (counts.get(trait.name) ?? 0) + 1);
   }
 
   const activeTraits = scoringTraits
@@ -299,6 +400,7 @@ async function solveBoard(
     champions,
     activeTraits,
     emblemAssignments,
+    craftedEmblems,
     khazixEvolutionTraits: champions.some((champion) =>
       champion.id.includes('18-khazix'),
     )
@@ -315,6 +417,7 @@ export async function optimizeBoards(
   emblemCounts: Record<string, number>,
   evolvedKhazix = false,
   limit = 3,
+  craftBudgets: CraftBudget[] = [],
 ): Promise<BoardResult[]> {
   const results: BoardResult[] = [];
   const exclusions: string[][] = [];
@@ -327,6 +430,7 @@ export async function optimizeBoards(
       emblemCounts,
       evolvedKhazix,
       exclusions,
+      craftBudgets,
     );
     if (result.status === 'infeasible') break;
     if (ceiling === undefined) ceiling = result.score;
@@ -336,43 +440,4 @@ export async function optimizeBoards(
   }
 
   return results;
-}
-
-export async function recommendCraftableEmblems(
-  data: TftData,
-  level: number,
-  emblemCounts: Record<string, number>,
-  candidates: Emblem[],
-  evolvedKhazix = false,
-  limit = 2,
-): Promise<EmblemRecommendation[]> {
-  const recommendations: EmblemRecommendation[] = [];
-
-  for (const emblem of candidates) {
-    const nextCounts = {
-      ...emblemCounts,
-      [emblem.id]: (emblemCounts[emblem.id] ?? 0) + 1,
-    };
-    const boards = await optimizeBoards(
-      data,
-      level,
-      nextCounts,
-      evolvedKhazix,
-      limit,
-    );
-    if (boards.length === 0) continue;
-    recommendations.push({ emblem, boards, score: boards[0].score });
-  }
-
-  recommendations.sort(
-    (a, b) =>
-      b.score - a.score ||
-      a.boards[0].totalCost - b.boards[0].totalCost ||
-      a.emblem.shortName.localeCompare(b.emblem.shortName, 'zh-CN'),
-  );
-
-  const ceiling = recommendations[0]?.score;
-  return recommendations.filter(
-    (recommendation) => recommendation.score === ceiling,
-  );
 }
